@@ -73,50 +73,57 @@ function render() {
     const app = document.getElementById('app');
     const state = getState();
     
-    const today = state.selectedDay;
-    const dayLabels = { monday: 'Monday', tuesday: 'Tuesday', wednesday: 'Wednesday', thursday: 'Thursday', friday: 'Friday' };
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+    const dayLabels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     
     let html = '<div class="app-container">';
     
     html += '<header class="header">';
     html += '<h1>🍽️ Ericsson Lunch Menu</h1>';
-    html += `<div class="week-info">Week ${state.currentWeek} - ${dayLabels[today]}</div>`;
+    html += `<div class="week-info">Week ${state.currentWeek}</div>`;
     html += '<button onclick="localStorage.clear(); location.reload();" class="refresh-btn">↻ Refresh</button>';
     html += '</header>';
     
-    html += '<div class="restaurant-list">';
+    html += '<div class="days-grid">';
     
-    restaurants.forEach(restaurant => {
-        html += `<div class="restaurant-card">`;
-        html += `<h2 class="restaurant-name">${restaurant.name}</h2>`;
+    days.forEach((day, i) => {
+        html += `<div class="day-column">`;
+        html += `<h2 class="day-header">${dayLabels[i]}</h2>`;
         
-        const menu = state.menus.get(restaurant.id);
-        const isLoading = state.loading.has(restaurant.id);
-        const error = state.errors.get(restaurant.id);
-        
-        if (isLoading) {
-            html += '<div class="loading">Loading...</div>';
-        } else if (error) {
-            html += `<div class="error">❌ Error loading menu</div>`;
-        } else if (menu && menu.days) {
-            const items = menu.days[today] || [];
-            if (items.length === 0) {
-                html += '<div class="no-items">No menu available</div>';
+        restaurants.forEach(restaurant => {
+            html += `<div class="restaurant-card">`;
+            html += `<h3 class="restaurant-name">${restaurant.name}</h3>`;
+            
+            const menu = state.menus.get(restaurant.id);
+            const isLoading = state.loading.has(restaurant.id);
+            const error = state.errors.get(restaurant.id);
+            
+            if (isLoading) {
+                html += '<div class="loading">Loading...</div>';
+            } else if (error) {
+                html += `<div class="error">❌ Error</div>`;
+            } else if (menu && menu.days) {
+                const items = menu.days[day] || [];
+                if (items.length === 0) {
+                    html += '<div class="no-items">No menu</div>';
+                } else {
+                    html += '<ul class="menu-items">';
+                    items.forEach(item => {
+                        html += `<li>`;
+                        html += `<span class="item-name">${item.name}</span>`;
+                        if (item.co2Label) {
+                            html += `<span class="co2-badge">${item.co2Label}</span>`;
+                        }
+                        html += `</li>`;
+                    });
+                    html += '</ul>';
+                }
             } else {
-                html += '<ul class="menu-items">';
-                items.forEach(item => {
-                    html += `<li>`;
-                    html += `<span class="item-name">${item.name}</span>`;
-                    if (item.co2Label) {
-                        html += `<span class="co2-badge">${item.co2Label}</span>`;
-                    }
-                    html += `</li>`;
-                });
-                html += '</ul>';
+                html += '<div class="no-items">No menu</div>';
             }
-        } else {
-            html += '<div class="no-items">No menu available</div>';
-        }
+            
+            html += '</div>';
+        });
         
         html += '</div>';
     });

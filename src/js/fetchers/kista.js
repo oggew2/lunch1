@@ -39,21 +39,20 @@ export class KistaFetcher extends MenuFetcher {
         const days = { monday: [], tuesday: [], wednesday: [], thursday: [], friday: [] };
         
         const menuText = doc.body.textContent;
-        console.log('Food & Co Kista HTML length:', menuText.length);
         
         const dayPatterns = [
-            { key: 'monday', pattern: /måndag|monday/i },
-            { key: 'tuesday', pattern: /tisdag|tuesday/i },
-            { key: 'wednesday', pattern: /onsdag|wednesday/i },
-            { key: 'thursday', pattern: /torsdag|thursday/i },
-            { key: 'friday', pattern: /fredag|friday/i }
+            { key: 'monday', pattern: /Måndag\s+\d{4}-\d{2}-\d{2}|Monday\s+\d{4}-\d{2}-\d{2}/i },
+            { key: 'tuesday', pattern: /Tisdag\s+\d{4}-\d{2}-\d{2}|Tuesday\s+\d{4}-\d{2}-\d{2}/i },
+            { key: 'wednesday', pattern: /Onsdag\s+\d{4}-\d{2}-\d{2}|Wednesday\s+\d{4}-\d{2}-\d{2}/i },
+            { key: 'thursday', pattern: /Torsdag\s+\d{4}-\d{2}-\d{2}|Thursday\s+\d{4}-\d{2}-\d{2}/i },
+            { key: 'friday', pattern: /Fredag\s+\d{4}-\d{2}-\d{2}|Friday\s+\d{4}-\d{2}-\d{2}/i }
         ];
         
         dayPatterns.forEach(({ key, pattern }) => {
             const match = menuText.match(pattern);
             if (match) {
                 const startIdx = match.index + match[0].length;
-                const section = menuText.substring(startIdx, startIdx + 1000);
+                const section = menuText.substring(startIdx, startIdx + 1500);
                 const lines = section.split('\n')
                     .map(l => l.trim())
                     .filter(l => {

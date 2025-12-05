@@ -5,21 +5,33 @@ const { chromium } = require('playwright');
 const PORT = 3001;
 
 async function scrapeFoodCo(url) {
-    console.log(`Scraping: ${url}`);
+    console.log(`Scraping all days from: ${url}`);
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
     
     try {
         await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
-        await page.waitForTimeout(2000);
+        await page.waitForTimeout(3000);
         
-        // Get initial HTML
-        const html = await page.content();
+        // Click "Hela veckan" to show all days at once
+        try {
+            const wholeWeekButton = page.locator('button:has-text("Hela veckan")');
+            if (await wholeWeekButton.count() > 0) {
+                await wholeWeekButton.first().click();
+                await page.waitForTimeout(3000);
+                console.log('  ✓ Clicked "Hela veckan"');
+            }
+        } catch (e) {
+            console.log('  Could not click "Hela veckan"');
+        }
+        
+        // Get all text content - should now contain all days
+        const allText = await page.textContent('body');
         
         await browser.close();
         
-        console.log(`Scraped ${html.length} bytes`);
-        return html;
+        console.log(`Total: ${allText.length} chars`);
+        return allText;
     } catch (error) {
         await browser.close();
         throw error;

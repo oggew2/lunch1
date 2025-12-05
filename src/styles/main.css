@@ -66,16 +66,34 @@ body {
     background: rgba(255, 255, 255, 0.3);
 }
 
-/* Restaurant List */
-.restaurant-list {
+/* Days Grid */
+.days-grid {
     flex: 1;
     padding: 24px;
-    max-width: 900px;
-    width: 100%;
-    margin: 0 auto;
+    display: flex;
+    gap: 24px;
+    overflow-x: auto;
+}
+
+.day-column {
+    min-width: 320px;
+    flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 16px;
+}
+
+.day-header {
+    background: var(--primary);
+    color: white;
+    padding: 16px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 600;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
 }
 
 .restaurant-card {
@@ -83,17 +101,12 @@ body {
     border-radius: 12px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     overflow: hidden;
-    transition: box-shadow 0.2s;
-}
-
-.restaurant-card:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .restaurant-name {
     background: var(--surface);
-    padding: 20px 24px;
-    font-size: 20px;
+    padding: 12px 16px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--text-primary);
     border-bottom: 2px solid var(--border);
@@ -166,25 +179,31 @@ body {
         font-size: 22px;
     }
     
-    .restaurant-list {
+    .days-grid {
         padding: 16px;
         gap: 16px;
     }
     
+    .day-column {
+        min-width: 280px;
+    }
+    
+    .day-header {
+        font-size: 16px;
+        padding: 12px;
+    }
+    
     .restaurant-name {
-        font-size: 18px;
-        padding: 16px;
+        font-size: 14px;
+        padding: 10px 12px;
     }
     
     .menu-items {
-        padding: 12px 16px;
+        padding: 8px 12px;
     }
     
     .menu-items li {
-        padding: 12px 0;
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
+        padding: 10px 0;
     }
     
     .item-name {
