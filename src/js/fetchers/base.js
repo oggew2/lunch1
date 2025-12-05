@@ -3,7 +3,7 @@
 import { NetworkError, ParseError } from '../utils/errors.js';
 
 const CORS_PROXY = 'https://corsproxy.io/?';
-const SCRAPER_SERVICE = '/api/scrape?url=';
+const SCRAPER_SERVICE = 'https://lunch1-1.onrender.com?url=';
 const TIMEOUT = 30000;
 const MAX_RETRIES = 1;
 
