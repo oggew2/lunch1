@@ -2,7 +2,7 @@
 const http = require('http');
 const { chromium } = require('playwright');
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 async function scrapeFoodCo(url) {
     console.log(`Scraping all days from: ${url}`);
