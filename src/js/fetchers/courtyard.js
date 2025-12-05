@@ -86,7 +86,4 @@ export class CourtyardFetcher extends MenuFetcher {
         if (/chicken|beef|pork|lamb|meat|kyckling|nöt|fläsk|lamm|kött|bacon|korv/.test(lower)) return '🍖 Meat';
         return null;
     }
-
-        return days;
-    }
 }
