@@ -2,7 +2,7 @@
 
 import { NetworkError, ParseError } from '../utils/errors.js';
 
-const ALLORIGINS_PROXY = 'https://api.allorigins.win/get?url=';
+const CORS_PROXY = 'https://corsproxy.io/?';
 const SCRAPER_SERVICE = '/.netlify/functions/scrape?url=';
 const TIMEOUT = 30000;
 const MAX_RETRIES = 1;
@@ -20,11 +20,14 @@ export class MenuFetcher {
             try {
                 // Try Netlify function first, fallback to CORS proxy
                 let proxyUrl;
+                let needsJsonParse = true;
+                
                 if (this.useScraperService && attempt === 0) {
                     proxyUrl = SCRAPER_SERVICE + encodeURIComponent(this.url);
                 } else {
-                    // Fallback to CORS proxy
-                    proxyUrl = ALLORIGINS_PROXY + encodeURIComponent(this.url);
+                    // Fallback to CORS proxy (returns HTML directly)
+                    proxyUrl = CORS_PROXY + encodeURIComponent(this.url);
+                    needsJsonParse = false;
                 }
                     
                 const response = await this.fetchWithTimeout(proxyUrl);
@@ -35,8 +38,15 @@ export class MenuFetcher {
                     }
                     throw new NetworkError(`HTTP ${response.status}`);
                 }
-                const data = await response.json();
-                const html = data.contents || data;
+                
+                let html;
+                if (needsJsonParse) {
+                    const data = await response.json();
+                    html = data.contents || data;
+                } else {
+                    html = await response.text();
+                }
+                
                 console.log(`Fetched ${html.length} bytes`);
                 return html;
             } catch (error) {

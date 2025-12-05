@@ -18,12 +18,23 @@ export class MenuFetcher {
         let lastError;
         for (let attempt = 0; attempt <= MAX_RETRIES; attempt++) {
             try {
-                const proxyUrl = this.useScraperService 
-                    ? SCRAPER_SERVICE + encodeURIComponent(this.url)
-                    : ALLORIGINS_PROXY + encodeURIComponent(this.url);
+                // Try Netlify function first, fallback to CORS proxy
+                let proxyUrl;
+                if (this.useScraperService && attempt === 0) {
+                    proxyUrl = SCRAPER_SERVICE + encodeURIComponent(this.url);
+                } else {
+                    // Fallback to CORS proxy
+                    proxyUrl = ALLORIGINS_PROXY + encodeURIComponent(this.url);
+                }
                     
                 const response = await this.fetchWithTimeout(proxyUrl);
-                if (!response.ok) throw new NetworkError(`HTTP ${response.status}`);
+                if (!response.ok) {
+                    if (this.useScraperService && attempt === 0) {
+                        console.log('Netlify function failed, trying CORS proxy...');
+                        continue; // Try again with CORS proxy
+                    }
+                    throw new NetworkError(`HTTP ${response.status}`);
+                }
                 const data = await response.json();
                 const html = data.contents || data;
                 console.log(`Fetched ${html.length} bytes`);
