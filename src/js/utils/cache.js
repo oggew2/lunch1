@@ -1,6 +1,6 @@
 // Cache utility functions using localStorage
 
-const CACHE_DURATION = 4 * 60 * 60 * 1000; // 4 hours in milliseconds
+const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours (1 day)
 
 export function saveToCache(key, data) {
     const cacheEntry = {
