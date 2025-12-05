@@ -79,7 +79,7 @@ function render() {
     let html = '<div class="app-container">';
     
     html += '<header class="header">';
-    html += '<h1>🍽️ Ericsson Lunch Menu</h1>';
+    html += '<h1>🍽️ Kista Lunch Menu</h1>';
     html += `<div class="week-info">Week ${state.currentWeek}</div>`;
     html += '<button onclick="localStorage.clear(); location.reload();" class="refresh-btn">↻ Refresh</button>';
     html += '</header>';
