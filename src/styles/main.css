@@ -121,19 +121,30 @@ body {
     padding: 16px 0;
     border-bottom: 1px solid #f5f5f5;
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
+    flex-wrap: wrap;
 }
 
 .menu-items li:last-child {
     border-bottom: none;
 }
 
+.category-badge {
+    background: #f5f5f5;
+    color: var(--text-secondary);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
 .item-name {
     flex: 1;
     font-size: 15px;
     line-height: 1.5;
+    min-width: 200px;
 }
 
 .co2-badge {

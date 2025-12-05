@@ -39,29 +39,25 @@ export class CourtyardFetcher extends MenuFetcher {
 
     extractMenuItems(doc) {
         const days = { monday: [], tuesday: [], wednesday: [], thursday: [], friday: [] };
-        const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
         const dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
 
-        // Find all weekday items
         const weekdayItems = doc.querySelectorAll('.weekday-item');
         
         weekdayItems.forEach((item, index) => {
             if (index >= dayKeys.length) return;
             const dayKey = dayKeys[index];
             
-            // Find English section
-            const engSection = item.querySelector('.sprak-wrapper-eng');
-            if (!engSection) return;
+            // Try English first, fallback to Swedish
+            const section = item.querySelector('.sprak-wrapper-eng') || item.querySelector('.sprak-wrapper-swe');
+            if (!section) return;
             
-            // Get all menu items (ratter divs)
-            const ratterDivs = engSection.querySelectorAll('.ratter');
+            const ratterDivs = section.querySelectorAll('.ratter');
             const items = [];
             
             ratterDivs.forEach(ratter => {
                 const text = ratter.textContent.trim();
                 if (!text || text.length < 5) return;
                 
-                // Find CO2 label in next sibling
                 let co2 = null;
                 const co2Container = ratter.nextElementSibling;
                 if (co2Container && co2Container.classList.contains('co2-container')) {
@@ -73,11 +69,23 @@ export class CourtyardFetcher extends MenuFetcher {
                     }
                 }
                 
-                items.push({ name: text, co2Label: co2 });
+                const category = this.detectCategory(text);
+                items.push({ name: text, co2Label: co2, category });
             });
             
             days[dayKey] = items;
         });
+
+        return days;
+    }
+    
+    detectCategory(text) {
+        const lower = text.toLowerCase();
+        if (/vegetar|vegan|veggie|tofu|falafel|quorn|halloumi|haloumi|soja|linser|ärtor/.test(lower)) return '🌱 Vegetarian';
+        if (/fish|salmon|cod|tuna|seafood|shrimp|lax|torsk|sill|räk|fisk|rödspätta|kolja/.test(lower)) return '🐟 Fish';
+        if (/chicken|beef|pork|lamb|meat|kyckling|nöt|fläsk|lamm|kött|bacon|korv/.test(lower)) return '🍖 Meat';
+        return null;
+    }
 
         return days;
     }

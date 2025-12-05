@@ -66,10 +66,22 @@ export class KistaFetcher extends MenuFetcher {
                                !l.includes('©') &&
                                !l.includes('http');
                     });
-                days[key] = lines.slice(0, 3).map(name => ({ name: name.trim(), co2Label: null }));
+                days[key] = lines.slice(0, 3).map(name => ({ 
+                    name: name.trim(), 
+                    co2Label: null,
+                    category: this.detectCategory(name)
+                }));
             }
         });
 
         return days;
+    }
+    
+    detectCategory(text) {
+        const lower = text.toLowerCase();
+        if (/vegetar|vegan|veggie|tofu|falafel|quorn|halloumi|haloumi/.test(lower)) return '🌱 Vegetarian';
+        if (/fish|salmon|cod|tuna|seafood|shrimp|paella/.test(lower)) return '🐟 Fish';
+        if (/chicken|beef|pork|lamb|meat|veal|tenderloin/.test(lower)) return '🍖 Meat';
+        return null;
     }
 }
