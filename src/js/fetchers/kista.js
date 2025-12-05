@@ -66,7 +66,19 @@ export class KistaFetcher extends MenuFetcher {
                                !l.includes('©') &&
                                !l.includes('http');
                     });
-                days[key] = lines.slice(0, 3).map(name => ({ 
+                
+                // Remove duplicates
+                const uniqueLines = [];
+                const seen = new Set();
+                for (const line of lines) {
+                    const normalized = line.toLowerCase().replace(/[^a-z]/g, '');
+                    if (!seen.has(normalized)) {
+                        seen.add(normalized);
+                        uniqueLines.push(line);
+                    }
+                }
+                
+                days[key] = uniqueLines.slice(0, 3).map(name => ({ 
                     name: name.trim(), 
                     co2Label: null,
                     category: this.detectCategory(name)
