@@ -1,0 +1,14 @@
+{
+  "name": "ericsson-lunch-menu",
+  "version": "2.0.0",
+  "description": "Ericsson Kista Lunch Menu Comparison App",
+  "main": "scraper-service.js",
+  "scripts": {
+    "start": "node scraper-service.js"
+  },
+  "dependencies": {
+    "playwright-aws-lambda": "^0.10.0",
+    "playwright-core": "^1.40.0"
+  }
+}
+

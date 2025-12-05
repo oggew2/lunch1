@@ -1,0 +1,266 @@
+/* Component Styles */
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+    background: var(--primary);
+    color: white;
+}
+
+.header h1 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    border-radius: 4px;
+    color: white;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.refresh-btn:hover:not(:disabled) {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.refresh-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.refresh-btn.loading .refresh-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@media (max-width: 768px) {
+    .header {
+        padding: 12px 16px;
+    }
+    
+    .header h1 {
+        font-size: 20px;
+    }
+    
+    .refresh-text {
+        display: none;
+    }
+}
+
+/* Date Selector */
+.date-selector {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 16px 24px;
+    background: var(--surface);
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.week-display {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.day-tabs {
+    display: flex;
+    gap: 8px;
+}
+
+.day-tab {
+    padding: 8px 16px;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    text-transform: capitalize;
+    transition: all 0.2s;
+}
+
+.day-tab:hover {
+    background: var(--surface);
+}
+
+.day-tab.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+@media (max-width: 768px) {
+    .date-selector {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 16px;
+    }
+    
+    .day-tabs {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .day-tab {
+        flex: 1;
+        padding: 8px 4px;
+        font-size: 12px;
+    }
+}
+
+/* Restaurant Card */
+.restaurant-card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 16px;
+    background: var(--surface);
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.card-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.card-body {
+    padding: 16px;
+}
+
+.menu-items {
+    list-style: none;
+}
+
+.menu-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.item-name {
+    flex: 1;
+    color: var(--text-primary);
+}
+
+.co2-label {
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.skeleton {
+    height: 20px;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+    border-radius: 4px;
+    margin: 12px 0;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.error-state {
+    text-align: center;
+    padding: 32px 16px;
+}
+
+.error-message {
+    color: var(--error);
+    margin-bottom: 16px;
+}
+
+.retry-btn {
+    padding: 8px 16px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.retry-btn:hover {
+    opacity: 0.9;
+}
+
+.no-data {
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 32px 16px;
+}
+
+/* Menu Grid */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    padding: 24px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--text-secondary);
+    padding: 48px 16px;
+}
+
+@media (max-width: 1024px) {
+    .menu-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .menu-grid {
+        grid-template-columns: 1fr;
+        padding: 16px;
+        gap: 16px;
+    }
+}
+
+/* Footer */
+.footer {
+    margin-top: auto;
+    padding: 16px 24px;
+    background: var(--surface);
+    border-top: 1px solid #e0e0e0;
+    text-align: center;
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+@media (max-width: 768px) {
+    .footer {
+        padding: 12px 16px;
+        font-size: 12px;
+    }
+}
