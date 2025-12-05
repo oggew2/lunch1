@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Module Loading Test</h1>
+    <div id="status">Testing...</div>
+    
+    <script type="module">
+        const status = document.getElementById('status');
+        try {
+            // Test if we can import the main app
+            import('./src/js/app.js')
+                .then(() => {
+                    status.innerHTML = '<span class="success">✓ Modules loaded successfully!</span>';
+                })
+                .catch(err => {
+                    status.innerHTML = `<span class="error">✗ Module error: ${err.message}</span>`;
+                    console.error(err);
+                });
+        } catch (err) {
+            status.innerHTML = `<span class="error">✗ Error: ${err.message}</span>`;
+            console.error(err);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+// The Courtyard menu fetcher
+
+import { MenuFetcher } from './base.js';
+import { ParseError } from '../utils/errors.js';
+
+export class CourtyardFetcher extends MenuFetcher {
+    constructor() {
+        super('https://ericssonbynordrest.se/restaurang/the-courtyard/');
+    }
+
+    parse(html) {
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const weekNumber = this.extractWeekNumber(doc);
+        const year = new Date().getFullYear();
+        const days = this.extractMenuItems(doc);
+
+        return {
+            restaurantId: 'courtyard',
+            weekNumber,
+            year,
+            days,
+            lastUpdated: new Date()
+        };
+    }
+
+    extractWeekNumber(doc) {
+        const text = doc.body.textContent;
+        const match = text.match(/W\.?\s*(\d+)/i);
+        if (match) return parseInt(match[1]);
+        
+        // Fallback to current week
+        const now = new Date();
+        const start = new Date(now.getFullYear(), 0, 1);
+        const diff = now - start;
+        return Math.ceil(diff / (7 * 24 * 60 * 60 * 1000));
+    }
+
+    extractMenuItems(doc) {
+        const days = { monday: [], tuesday: [], wednesday: [], thursday: [], friday: [] };
+        const dayNames = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+        const dayKeys = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+
+        // Find all weekday items
+        const weekdayItems = doc.querySelectorAll('.weekday-item');
+        
+        weekdayItems.forEach((item, index) => {
+            if (index >= dayKeys.length) return;
+            const dayKey = dayKeys[index];
+            
+            // Find English section
+            const engSection = item.querySelector('.sprak-wrapper-eng');
+            if (!engSection) return;
+            
+            // Get all menu items (ratter divs)
+            const ratterDivs = engSection.querySelectorAll('.ratter');
+            const items = [];
+            
+            ratterDivs.forEach(ratter => {
+                const text = ratter.textContent.trim();
+                if (!text || text.length < 5) return;
+                
+                // Find CO2 label in next sibling
+                let co2 = null;
+                const co2Container = ratter.nextElementSibling;
+                if (co2Container && co2Container.classList.contains('co2-container')) {
+                    const img = co2Container.querySelector('img');
+                    if (img) {
+                        const src = img.getAttribute('data-lazy-src') || img.src;
+                        const match = src.match(/\/([0-9.]+)\.svg/);
+                        if (match) co2 = match[1];
+                    }
+                }
+                
+                items.push({ name: text, co2Label: co2 });
+            });
+            
+            days[dayKey] = items;
+        });
+
+        return days;
+    }
+}

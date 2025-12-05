@@ -1,0 +1,12 @@
+{
+  "name": "lunch-menu-scraper",
+  "version": "1.0.0",
+  "description": "Scraper service for Food & Co menus",
+  "main": "scraper-service.js",
+  "scripts": {
+    "start": "node scraper-service.js"
+  },
+  "dependencies": {
+    "playwright": "^1.40.0"
+  }
+}
