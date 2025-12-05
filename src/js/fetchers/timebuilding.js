@@ -70,10 +70,18 @@ export class TimeBuildingFetcher extends MenuFetcher {
                 const seen = new Set();
                 for (const line of allLines) {
                     const normalized = line.toLowerCase().replace(/[^a-z]/g, '');
+                    const hasSwedish = /[åäö]/i.test(line);
+                    
                     if (!seen.has(normalized)) {
                         seen.add(normalized);
-                        // Only add if it's English (no Swedish chars)
-                        if (!/[åäö]/i.test(line)) {
+                        // Prefer English version
+                        if (!hasSwedish) {
+                            uniqueLines.push(line);
+                        }
+                    } else if (!hasSwedish) {
+                        // If we've seen this before but this is the English version, replace it
+                        const idx = uniqueLines.findIndex(l => l.toLowerCase().replace(/[^a-z]/g, '') === normalized);
+                        if (idx === -1) {
                             uniqueLines.push(line);
                         }
                     }
