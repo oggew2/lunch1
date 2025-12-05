@@ -68,19 +68,33 @@ export class KistaFetcher extends MenuFetcher {
                 // Deduplicate - prefer English (no Swedish chars)
                 const uniqueLines = [];
                 const seen = new Set();
+                
                 for (const line of allLines) {
-                    const normalized = line.toLowerCase().replace(/[^a-z]/g, '');
                     const hasSwedish = /[åäö]/i.test(line);
                     
-                    if (!seen.has(normalized)) {
-                        seen.add(normalized);
+                    // Extract key words (3+ letters, not common words)
+                    const keywords = line.toLowerCase()
+                        .split(/\s+/)
+                        .filter(w => w.length >= 4 && !/^(with|and|the|med|och|för|till)$/.test(w))
+                        .sort()
+                        .join('|');
+                    
+                    if (!seen.has(keywords)) {
+                        seen.add(keywords);
                         // Prefer English version
                         if (!hasSwedish) {
                             uniqueLines.push(line);
                         }
                     } else if (!hasSwedish) {
-                        // If we've seen this before but this is the English version, replace it
-                        const idx = uniqueLines.findIndex(l => l.toLowerCase().replace(/[^a-z]/g, '') === normalized);
+                        // If we've seen similar keywords but this is English, add it
+                        const idx = uniqueLines.findIndex(l => {
+                            const lKeywords = l.toLowerCase()
+                                .split(/\s+/)
+                                .filter(w => w.length >= 4 && !/^(with|and|the|med|och|för|till)$/.test(w))
+                                .sort()
+                                .join('|');
+                            return lKeywords === keywords;
+                        });
                         if (idx === -1) {
                             uniqueLines.push(line);
                         }
