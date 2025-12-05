@@ -13,25 +13,34 @@ async function scrapeFoodCo(url) {
         await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
         await page.waitForTimeout(3000);
         
-        // Click "Hela veckan" to show all days at once
-        try {
-            const wholeWeekButton = page.locator('button:has-text("Hela veckan")');
-            if (await wholeWeekButton.count() > 0) {
-                await wholeWeekButton.first().click();
-                await page.waitForTimeout(3000);
-                console.log('  ✓ Clicked "Hela veckan"');
+        // Check if this is a Food & Co site (needs "Hela veckan" button)
+        const isFoodAndCo = url.includes('compass-group.se');
+        
+        if (isFoodAndCo) {
+            // Click "Hela veckan" to show all days at once
+            try {
+                const wholeWeekButton = page.locator('button:has-text("Hela veckan")');
+                if (await wholeWeekButton.count() > 0) {
+                    await wholeWeekButton.first().click();
+                    await page.waitForTimeout(3000);
+                    console.log('  ✓ Clicked "Hela veckan"');
+                }
+            } catch (e) {
+                console.log('  Could not click "Hela veckan"');
             }
-        } catch (e) {
-            console.log('  Could not click "Hela veckan"');
+            
+            // Get all text content for Food & Co
+            const allText = await page.textContent('body');
+            await browser.close();
+            console.log(`Total: ${allText.length} chars`);
+            return allText;
+        } else {
+            // For other sites (like Courtyard), return HTML
+            const html = await page.content();
+            await browser.close();
+            console.log(`Total: ${html.length} bytes`);
+            return html;
         }
-        
-        // Get all text content - should now contain all days
-        const allText = await page.textContent('body');
-        
-        await browser.close();
-        
-        console.log(`Total: ${allText.length} chars`);
-        return allText;
     } catch (error) {
         await browser.close();
         throw error;

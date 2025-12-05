@@ -79,9 +79,9 @@ export class KistaFetcher extends MenuFetcher {
     
     detectCategory(text) {
         const lower = text.toLowerCase();
-        if (/vegetar|vegan|veggie|tofu|falafel|quorn|halloumi|haloumi/.test(lower)) return '🌱 Vegetarian';
-        if (/fish|salmon|cod|tuna|seafood|shrimp|paella/.test(lower)) return '🐟 Fish';
-        if (/chicken|beef|pork|lamb|meat|veal|tenderloin/.test(lower)) return '🍖 Meat';
+        if (/vegetar|vegan|veggie|tofu|falafel|quorn|halloumi|haloumi|chickpea|cauliflower|zucchini|patties|kebab.*veggie/.test(lower)) return '🌱 Vegetarian';
+        if (/fish|salmon|cod|tuna|seafood|shrimp|paella|saithe|bratwurst/.test(lower)) return '🐟 Fish';
+        if (/chicken|beef|pork|lamb|meat|veal|tenderloin|schnitzel|ribs|drumstick|chorizo|salsiccia|cabbage roll|cannelloni/.test(lower)) return '🍖 Meat';
         return null;
     }
 }
