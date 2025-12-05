@@ -1,15 +1,15 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/scrape.js",
-      "use": "@vercel/node"
-    }
-  ],
+  "buildCommand": "echo 'No build needed'",
+  "outputDirectory": "src",
   "routes": [
     {
       "src": "/api/scrape",
       "dest": "/api/scrape.js"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/src/$1"
     }
   ]
 }
