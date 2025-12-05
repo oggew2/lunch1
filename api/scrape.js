@@ -1,4 +1,5 @@
-const playwright = require('playwright-aws-lambda');
+const chromium = require('chrome-aws-lambda');
+const puppeteer = require('puppeteer-core');
 
 module.exports = async (req, res) => {
   const url = req.query.url;
@@ -10,26 +11,28 @@ module.exports = async (req, res) => {
   let browser = null;
   
   try {
-    browser = await playwright.launchChromium();
+    browser = await puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless,
+    });
+
     const page = await browser.newPage();
-    
-    await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+    await page.goto(url, { waitUntil: 'networkidle2', timeout: 30000 });
     await page.waitForTimeout(3000);
 
     const isFoodAndCo = url.includes('compass-group.se');
     
     if (isFoodAndCo) {
       try {
-        const button = page.locator('button:has-text("Hela veckan")');
-        if (await button.count() > 0) {
-          await button.first().click();
-          await page.waitForTimeout(3000);
-        }
+        await page.click('button:has-text("Hela veckan")');
+        await page.waitForTimeout(3000);
       } catch (e) {
         console.log('Could not click Hela veckan');
       }
       
-      const allText = await page.textContent('body');
+      const allText = await page.evaluate(() => document.body.textContent);
       await browser.close();
       
       return res.status(200).json({ contents: allText });
