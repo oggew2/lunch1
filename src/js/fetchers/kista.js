@@ -65,39 +65,35 @@ export class KistaFetcher extends MenuFetcher {
                                !l.includes('http');
                     });
                 
-                // Deduplicate - prefer English (no Swedish chars)
+                // Deduplicate - prefer English
                 const uniqueLines = [];
-                const seen = new Set();
                 
                 for (const line of allLines) {
                     const hasSwedish = /[åäö]/i.test(line);
                     
-                    // Extract key words (3+ letters, not common words)
-                    const keywords = line.toLowerCase()
+                    // Extract significant keywords
+                    const keywords = new Set(line.toLowerCase()
                         .split(/\s+/)
-                        .filter(w => w.length >= 4 && !/^(with|and|the|med|och|för|till)$/.test(w))
-                        .sort()
-                        .join('|');
+                        .filter(w => w.length >= 5 && !/^(with|and|the|med|och|för|till|served)$/.test(w)));
                     
-                    if (!seen.has(keywords)) {
-                        seen.add(keywords);
-                        // Prefer English version
-                        if (!hasSwedish) {
-                            uniqueLines.push(line);
+                    // Check if this is a duplicate of existing item
+                    const isDuplicate = uniqueLines.some(existing => {
+                        const existingKeywords = new Set(existing.toLowerCase()
+                            .split(/\s+/)
+                            .filter(w => w.length >= 5 && !/^(with|and|the|med|och|för|till|served)$/.test(w)));
+                        
+                        // Count shared keywords
+                        let shared = 0;
+                        for (const kw of keywords) {
+                            if (existingKeywords.has(kw)) shared++;
                         }
-                    } else if (!hasSwedish) {
-                        // If we've seen similar keywords but this is English, add it
-                        const idx = uniqueLines.findIndex(l => {
-                            const lKeywords = l.toLowerCase()
-                                .split(/\s+/)
-                                .filter(w => w.length >= 4 && !/^(with|and|the|med|och|för|till)$/.test(w))
-                                .sort()
-                                .join('|');
-                            return lKeywords === keywords;
-                        });
-                        if (idx === -1) {
-                            uniqueLines.push(line);
-                        }
+                        
+                        // If they share 2+ keywords, consider them duplicates
+                        return shared >= 2;
+                    });
+                    
+                    if (!isDuplicate && !hasSwedish) {
+                        uniqueLines.push(line);
                     }
                 }
                 
