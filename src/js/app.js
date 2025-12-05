@@ -12,9 +12,9 @@ import { createMenuGrid } from './components/menuGrid.js';
 import { createFooter, updateFooterTimestamp } from './components/footer.js';
 
 const restaurants = [
+    { id: 'kista', name: 'Food & Co Kista', fetcher: new KistaFetcher() },
     { id: 'courtyard', name: 'The Courtyard', fetcher: new CourtyardFetcher() },
-    { id: 'timebuilding', name: 'Food & Co Time Building', fetcher: new TimeBuildingFetcher() },
-    { id: 'kista', name: 'Food & Co Kista', fetcher: new KistaFetcher() }
+    { id: 'timebuilding', name: 'Food & Co Time Building', fetcher: new TimeBuildingFetcher() }
 ];
 
 async function fetchMenu(restaurant, useCache = true) {

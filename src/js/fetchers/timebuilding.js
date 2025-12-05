@@ -118,7 +118,7 @@ export class TimeBuildingFetcher extends MenuFetcher {
         if (/beef|pork|lamb|veal|chicken|drumstick|ribs|chorizo|salsiccia|bratwurst/.test(lower)) return '🍖 Meat';
         if (/fish|salmon|cod|tuna|seafood|shrimp|paella|saithe/.test(lower)) return '🐟 Fish';
         // Then vegetarian ingredients
-        if (/veggie|tofu|falafel|quorn|halloumi|haloumi|chickpea|cauliflower|zucchini|patties|pizza.*goat|pizza.*cheese/.test(lower)) return '🌱 Vegetarian';
+        if (/veggie|tofu|falafel|quorn|halloumi|haloumi|chickpea|cauliflower|zucchini|patties|pizza.*goat|pizza.*cheese|pea.*pancake|leek/.test(lower)) return '🌱 Vegetarian';
         return null;
     }
 }
