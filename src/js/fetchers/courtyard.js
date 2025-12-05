@@ -73,7 +73,7 @@ export class CourtyardFetcher extends MenuFetcher {
         // Check desserts first
         if (/glass|pannkak|dessert|crumble/.test(lower)) return '🍰 Dessert';
         // Check for EXPLICIT vegan/vegetarian label (overrides everything)
-        if (/\b(vegan|vegetar)\b/.test(lower)) return '🌱 Vegetarian';
+        if (/vegan|vegetar/.test(lower)) return '🌱 Vegetarian';
         // Then check for actual fish/meat ingredients
         if (/fish|salmon|cod|tuna|seafood|shrimp|lax|torsk|sill|räk|fisk|rödspätta|kolja|sej|kapkummel/.test(lower)) return '🐟 Fish';
         if (/chicken|beef|pork|lamb|meat|kyckling|nöt|fläsk|lamm|kött|bacon|korv|biff|schnitzel/.test(lower)) return '🍖 Meat';

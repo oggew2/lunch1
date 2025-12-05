@@ -69,7 +69,7 @@ export class TimeBuildingFetcher extends MenuFetcher {
                 const uniqueLines = [];
                 
                 for (const line of allLines) {
-                    const hasSwedish = /[åäö]/i.test(line);
+                    const hasSwedish = /[åäö]|(\boch\b)|(\bmed\b)|(\bstekt\b)|(\bgrillad\b)/i.test(line);
                     
                     // Extract significant keywords
                     const keywords = new Set(line.toLowerCase()
@@ -113,7 +113,7 @@ export class TimeBuildingFetcher extends MenuFetcher {
         // Skip generic descriptions
         if (/kitchen chooses|extra dish/.test(lower)) return null;
         // Check for EXPLICIT vegetarian label (overrides ingredients)
-        if (/\b(vegan|vegetar)\b/.test(lower)) return '🌱 Vegetarian';
+        if (/vegan|vegetar/.test(lower)) return '🌱 Vegetarian';
         // Then check for actual meat/fish ingredients
         if (/beef|pork|lamb|veal|chicken|drumstick|ribs|chorizo|salsiccia|bratwurst/.test(lower)) return '🍖 Meat';
         if (/fish|salmon|cod|tuna|seafood|shrimp|paella|saithe/.test(lower)) return '🐟 Fish';
