@@ -11,7 +11,21 @@ async function scrapeFoodCo(url) {
     
     try {
         await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
-        await page.waitForTimeout(2000); // Wait for React to render
+        await page.waitForTimeout(2000);
+        
+        // Click through all day tabs to load all content
+        const days = ['måndag', 'tisdag', 'onsdag', 'torsdag', 'fredag'];
+        for (const day of days) {
+            try {
+                const button = await page.locator(`button:has-text("${day}")`).first();
+                if (await button.isVisible()) {
+                    await button.click();
+                    await page.waitForTimeout(500);
+                }
+            } catch (e) {
+                console.log(`Could not click ${day} tab`);
+            }
+        }
         
         const html = await page.content();
         await browser.close();
