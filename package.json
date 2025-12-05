@@ -2,13 +2,9 @@
   "name": "kista-lunch-menu",
   "version": "2.0.0",
   "description": "Kista Lunch Menu Comparison App",
-  "main": "scraper-service.js",
-  "scripts": {
-    "start": "node scraper-service.js"
-  },
   "dependencies": {
-    "chrome-aws-lambda": "^10.1.0",
-    "puppeteer-core": "^10.4.0"
+    "@sparticuz/chromium": "^119.0.2",
+    "puppeteer-core": "^21.5.2"
   }
 }
 

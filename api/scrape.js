@@ -1,4 +1,4 @@
-const chromium = require('chrome-aws-lambda');
+const chromium = require('@sparticuz/chromium');
 const puppeteer = require('puppeteer-core');
 
 module.exports = async (req, res) => {
@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
     browser = await puppeteer.launch({
       args: chromium.args,
       defaultViewport: chromium.defaultViewport,
-      executablePath: await chromium.executablePath,
+      executablePath: await chromium.executablePath(),
       headless: chromium.headless,
     });
 
@@ -26,8 +26,15 @@ module.exports = async (req, res) => {
     
     if (isFoodAndCo) {
       try {
-        await page.click('button:has-text("Hela veckan")');
-        await page.waitForTimeout(3000);
+        const buttons = await page.$$('button');
+        for (const button of buttons) {
+          const text = await page.evaluate(el => el.textContent, button);
+          if (text && text.includes('Hela veckan')) {
+            await button.click();
+            await page.waitForTimeout(3000);
+            break;
+          }
+        }
       } catch (e) {
         console.log('Could not click Hela veckan');
       }
