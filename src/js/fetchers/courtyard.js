@@ -70,12 +70,12 @@ export class CourtyardFetcher extends MenuFetcher {
     
     detectCategory(text) {
         const lower = text.toLowerCase();
-        // Check desserts
+        // Check desserts first
         if (/glass|pannkak|dessert|crumble/.test(lower)) return '🍰 Dessert';
-        // Check vegetarian/vegan first
-        if (/vegan|vegetar|veggie|tofu|falafel|quorn|halloumi|haloumi|soja|linser|ärtor|ädelost.*paj/.test(lower)) return '🌱 Vegetarian';
-        // Then fish
+        // Check fish BEFORE vegetarian (lax = salmon)
         if (/fish|salmon|cod|tuna|seafood|shrimp|lax|torsk|sill|räk|fisk|rödspätta|kolja|sej|kapkummel/.test(lower)) return '🐟 Fish';
+        // Then vegetarian/vegan (removed ärtor since it appears with fish dishes)
+        if (/vegan|vegetar|veggie|tofu|falafel|quorn|halloumi|haloumi|soja|linser|ädelost.*paj/.test(lower)) return '🌱 Vegetarian';
         // Then meat
         if (/chicken|beef|pork|lamb|meat|kyckling|nöt|fläsk|lamm|kött|bacon|korv|biff|schnitzel/.test(lower)) return '🍖 Meat';
         return null;
