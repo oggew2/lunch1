@@ -53,13 +53,11 @@ export class KistaFetcher extends MenuFetcher {
             if (match) {
                 const startIdx = match.index + match[0].length;
                 const section = menuText.substring(startIdx, startIdx + 1500);
-                const lines = section.split('\n')
+                const allLines = section.split('\n')
                     .map(l => l.trim())
                     .filter(l => {
-                        const hasSwedishChars = /[åäö]/i.test(l);
                         return l.length > 15 && 
                                l.length < 200 && 
-                               !hasSwedishChars &&
                                !l.match(/^\d{4}-\d{2}-\d{2}/) && 
                                !l.match(/lunch serveras/i) && 
                                !l.match(/^\d{2}[:.]\d{2}/) &&
@@ -67,14 +65,17 @@ export class KistaFetcher extends MenuFetcher {
                                !l.includes('http');
                     });
                 
-                // Remove duplicates
+                // Deduplicate - prefer English (no Swedish chars)
                 const uniqueLines = [];
                 const seen = new Set();
-                for (const line of lines) {
+                for (const line of allLines) {
                     const normalized = line.toLowerCase().replace(/[^a-z]/g, '');
                     if (!seen.has(normalized)) {
                         seen.add(normalized);
-                        uniqueLines.push(line);
+                        // Only add if it's English (no Swedish chars)
+                        if (!/[åäö]/i.test(line)) {
+                            uniqueLines.push(line);
+                        }
                     }
                 }
                 
