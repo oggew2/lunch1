@@ -38,6 +38,27 @@ export class TimeBuildingFetcher extends MenuFetcher {
     extractMenuItems(doc) {
         const days = { monday: [], tuesday: [], wednesday: [], thursday: [], friday: [] };
         
+        // Try to extract from __NUXT__ state
+        const scripts = doc.querySelectorAll('script');
+        for (const script of scripts) {
+            const content = script.textContent;
+            if (content.includes('__NUXT__') || content.includes('lunchMenus')) {
+                try {
+                    // Extract menu data from state
+                    const stateMatch = content.match(/__NUXT__\s*=\s*({.+?});/s);
+                    if (stateMatch) {
+                        const state = JSON.parse(stateMatch[1]);
+                        // Navigate state to find menu data
+                        // This is a placeholder - actual path depends on state structure
+                        console.log('Found NUXT state');
+                    }
+                } catch (e) {
+                    console.log('Could not parse state:', e.message);
+                }
+            }
+        }
+        
+        // Fallback to text extraction
         const menuText = doc.body.textContent;
         console.log('Food & Co HTML length:', menuText.length);
         
