@@ -1,12 +1,11 @@
-const playwright = require('playwright-aws-lambda');
+const chromium = require('chrome-aws-lambda');
 
 exports.handler = async (event) => {
-  const url = event.queryStringParameters?.url;
+  const url = event.queryStringParameters.url;
   
   if (!url) {
     return {
       statusCode: 400,
-      headers: { 'Access-Control-Allow-Origin': '*' },
       body: JSON.stringify({ error: 'Missing url parameter' })
     };
   }
@@ -14,26 +13,30 @@ exports.handler = async (event) => {
   let browser = null;
   
   try {
-    browser = await playwright.launchChromium();
+    browser = await chromium.puppeteer.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath,
+      headless: chromium.headless
+    });
+
     const page = await browser.newPage();
-    
-    await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+    await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
     await page.waitForTimeout(3000);
 
+    // Check if this is a Food & Co site
     const isFoodAndCo = url.includes('compass-group.se');
     
     if (isFoodAndCo) {
+      // Click "Hela veckan" button
       try {
-        const button = page.locator('button:has-text("Hela veckan")');
-        if (await button.count() > 0) {
-          await button.first().click();
-          await page.waitForTimeout(3000);
-        }
+        await page.click('button:has-text("Hela veckan")');
+        await page.waitForTimeout(3000);
       } catch (e) {
         console.log('Could not click Hela veckan');
       }
       
-      const allText = await page.textContent('body');
+      const allText = await page.evaluate(() => document.body.textContent);
       await browser.close();
       
       return {
@@ -59,8 +62,6 @@ exports.handler = async (event) => {
     }
   } catch (error) {
     if (browser) await browser.close();
-    
-    console.error('Scraper error:', error);
     
     return {
       statusCode: 500,
