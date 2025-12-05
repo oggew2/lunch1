@@ -79,11 +79,13 @@ export class TimeBuildingFetcher extends MenuFetcher {
     
     detectCategory(text) {
         const lower = text.toLowerCase();
-        // Check fish first
+        // Skip generic descriptions
+        if (/kitchen chooses|extra dish/.test(lower)) return null;
+        // Check vegetarian first
+        if (/vegetar|vegan|veggie|tofu|falafel|quorn|halloumi|haloumi|chickpea|cauliflower|zucchini|patties|pizza.*goat|pizza.*cheese/.test(lower) && !/meat/.test(lower)) return '🌱 Vegetarian';
+        // Then fish
         if (/fish|salmon|cod|tuna|seafood|shrimp|paella|saithe/.test(lower)) return '🐟 Fish';
-        // Then vegetarian
-        if (/vegetar|vegan|veggie|tofu|falafel|quorn|halloumi|haloumi|chickpea|cauliflower|zucchini|patties/.test(lower)) return '🌱 Vegetarian';
-        // Then meat (but exclude if it says "vegetarian" in the name)
+        // Then meat
         if (/chicken|beef|pork|lamb|meat|veal|tenderloin|schnitzel|ribs|drumstick|chorizo|salsiccia|cabbage roll|cannelloni|bratwurst/.test(lower) && !/vegetar/.test(lower)) return '🍖 Meat';
         return null;
     }
