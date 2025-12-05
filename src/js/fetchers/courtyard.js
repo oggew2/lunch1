@@ -72,12 +72,13 @@ export class CourtyardFetcher extends MenuFetcher {
         const lower = text.toLowerCase();
         // Check desserts first
         if (/glass|pannkak|dessert|crumble/.test(lower)) return '🍰 Dessert';
-        // Check vegan/vegetarian FIRST (before fish) to catch "vegansk fisk" etc
-        if (/vegan|vegetar|veggie|tofu|falafel|quorn|halloumi|haloumi|soja|linser|ädelost.*paj/.test(lower)) return '🌱 Vegetarian';
-        // Then fish (real fish)
+        // Check for EXPLICIT vegan/vegetarian label (overrides everything)
+        if (/\b(vegan|vegetar)\b/.test(lower)) return '🌱 Vegetarian';
+        // Then check for actual fish/meat ingredients
         if (/fish|salmon|cod|tuna|seafood|shrimp|lax|torsk|sill|räk|fisk|rödspätta|kolja|sej|kapkummel/.test(lower)) return '🐟 Fish';
-        // Then meat
         if (/chicken|beef|pork|lamb|meat|kyckling|nöt|fläsk|lamm|kött|bacon|korv|biff|schnitzel/.test(lower)) return '🍖 Meat';
+        // Then check for vegetarian ingredients (tofu, quorn, etc)
+        if (/veggie|tofu|falafel|quorn|halloumi|haloumi|soja|linser|ädelost.*paj/.test(lower)) return '🌱 Vegetarian';
         return null;
     }
 }

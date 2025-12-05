@@ -112,12 +112,13 @@ export class KistaFetcher extends MenuFetcher {
         const lower = text.toLowerCase();
         // Skip generic descriptions
         if (/kitchen chooses|extra dish/.test(lower)) return null;
-        // Check vegetarian first
-        if (/vegetar|vegan|veggie|tofu|falafel|quorn|halloumi|haloumi|chickpea|cauliflower|zucchini|patties|pizza.*goat|pizza.*cheese/.test(lower) && !/meat/.test(lower)) return '🌱 Vegetarian';
-        // Then fish
+        // Check for EXPLICIT vegetarian label (overrides ingredients)
+        if (/\b(vegan|vegetar)\b/.test(lower)) return '🌱 Vegetarian';
+        // Then check for actual meat/fish ingredients
+        if (/beef|pork|lamb|veal|chicken|drumstick|ribs|chorizo|salsiccia|bratwurst/.test(lower)) return '🍖 Meat';
         if (/fish|salmon|cod|tuna|seafood|shrimp|paella|saithe/.test(lower)) return '🐟 Fish';
-        // Then meat
-        if (/chicken|beef|pork|lamb|meat|veal|tenderloin|schnitzel|ribs|drumstick|chorizo|salsiccia|cabbage roll|cannelloni|bratwurst/.test(lower) && !/vegetar/.test(lower)) return '🍖 Meat';
+        // Then vegetarian ingredients
+        if (/veggie|tofu|falafel|quorn|halloumi|haloumi|chickpea|cauliflower|zucchini|patties|pizza.*goat|pizza.*cheese/.test(lower)) return '🌱 Vegetarian';
         return null;
     }
 }
