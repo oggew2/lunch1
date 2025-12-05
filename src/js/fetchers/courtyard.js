@@ -47,8 +47,8 @@ export class CourtyardFetcher extends MenuFetcher {
             if (index >= dayKeys.length) return;
             const dayKey = dayKeys[index];
             
-            // Try English first, fallback to Swedish
-            const section = item.querySelector('.sprak-wrapper-eng') || item.querySelector('.sprak-wrapper-swe');
+            // Use Swedish section
+            const section = item.querySelector('.sprak-wrapper-swe');
             if (!section) return;
             
             const ratterDivs = section.querySelectorAll('.ratter');
@@ -58,19 +58,8 @@ export class CourtyardFetcher extends MenuFetcher {
                 const text = ratter.textContent.trim();
                 if (!text || text.length < 5) return;
                 
-                let co2 = null;
-                const co2Container = ratter.nextElementSibling;
-                if (co2Container && co2Container.classList.contains('co2-container')) {
-                    const img = co2Container.querySelector('img');
-                    if (img) {
-                        const src = img.getAttribute('data-lazy-src') || img.src;
-                        const match = src.match(/\/([0-9.]+)\.svg/);
-                        if (match) co2 = match[1];
-                    }
-                }
-                
                 const category = this.detectCategory(text);
-                items.push({ name: text, co2Label: co2, category });
+                items.push({ name: text, category });
             });
             
             days[dayKey] = items;
@@ -81,9 +70,9 @@ export class CourtyardFetcher extends MenuFetcher {
     
     detectCategory(text) {
         const lower = text.toLowerCase();
-        // Skip desserts
-        if (/glass|pannkak|dessert|crumble/.test(lower)) return null;
-        // Check vegetarian/vegan first (most specific)
+        // Check desserts
+        if (/glass|pannkak|dessert|crumble/.test(lower)) return '🍰 Dessert';
+        // Check vegetarian/vegan first
         if (/vegan|vegetar|veggie|tofu|falafel|quorn|halloumi|haloumi|soja|linser|ärtor|ädelost.*paj/.test(lower)) return '🌱 Vegetarian';
         // Then fish
         if (/fish|salmon|cod|tuna|seafood|shrimp|lax|torsk|sill|räk|fisk|rödspätta|kolja|sej|kapkummel/.test(lower)) return '🐟 Fish';

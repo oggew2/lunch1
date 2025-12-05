@@ -114,9 +114,6 @@ function render() {
                             html += `<span class="category-badge">${item.category}</span>`;
                         }
                         html += `<span class="item-name">${item.name}</span>`;
-                        if (item.co2Label) {
-                            html += `<span class="co2-badge">${item.co2Label}</span>`;
-                        }
                         html += `</li>`;
                     });
                     html += '</ul>';
