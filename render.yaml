@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: kista-lunch-scraper
+    env: node
+    plan: free
+    buildCommand: npm install && npx playwright install --with-deps chromium
+    startCommand: node scraper-service.js
+    envVars:
+      - key: NODE_ENV
+        value: production
