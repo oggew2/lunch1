@@ -81,48 +81,70 @@ function render() {
         errorsCount: state.errors.size
     });
     
-    // Simple direct rendering
-    let html = '<div style="padding: 20px; font-family: sans-serif;">';
-    html += '<h1 style="color: #0082C8;">Ericsson Lunch Menu</h1>';
-    html += `<p>Selected day: <strong>${state.selectedDay}</strong></p>`;
-    html += '<button onclick="localStorage.clear(); location.reload();" style="padding: 10px 20px; background: #0082C8; color: white; border: none; border-radius: 4px; cursor: pointer;">Clear Cache & Reload</button>';
-    html += '<hr>';
+    const days = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+    const dayLabels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     
-    restaurants.forEach(restaurant => {
-        html += `<div style="margin: 20px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">`;
-        html += `<h2>${restaurant.name}</h2>`;
+    let html = '<div class="app-container">';
+    
+    // Header
+    html += '<header class="header">';
+    html += '<h1>🍽️ Ericsson Lunch Menu</h1>';
+    html += `<div class="week-info">Week ${state.currentWeek}</div>`;
+    html += '<button onclick="localStorage.clear(); location.reload();" class="refresh-btn">↻ Refresh</button>';
+    html += '</header>';
+    
+    // Days grid - horizontal layout
+    html += '<div class="days-grid">';
+    
+    days.forEach((day, i) => {
+        html += `<div class="day-column">`;
+        html += `<h2 class="day-header">${dayLabels[i]}</h2>`;
         
-        const menu = state.menus.get(restaurant.id);
-        const isLoading = state.loading.has(restaurant.id);
-        const error = state.errors.get(restaurant.id);
-        
-        console.log(`[${restaurant.id}] menu:`, menu);
-        
-        if (isLoading) {
-            html += '<p>Loading...</p>';
-        } else if (error) {
-            html += `<p style="color: red;">Error: ${error.message}</p>`;
-        } else if (menu && menu.days) {
-            const items = menu.days[state.selectedDay] || [];
-            console.log(`[${restaurant.id}] items for ${state.selectedDay}:`, items);
+        // Restaurant cards for this day
+        restaurants.forEach(restaurant => {
+            html += `<div class="restaurant-card">`;
+            html += `<h3 class="restaurant-name">${restaurant.name}</h3>`;
             
-            if (items.length === 0) {
-                html += `<p style="color: orange;">No items for ${state.selectedDay}</p>`;
+            const menu = state.menus.get(restaurant.id);
+            const isLoading = state.loading.has(restaurant.id);
+            const error = state.errors.get(restaurant.id);
+            
+            if (isLoading) {
+                html += '<div class="loading">Loading...</div>';
+            } else if (error) {
+                html += `<div class="error">❌ Error</div>`;
+            } else if (menu && menu.days) {
+                const items = menu.days[day] || [];
+                if (items.length === 0) {
+                    html += '<div class="no-items">No menu</div>';
+                } else {
+                    html += '<ul class="menu-items">';
+                    items.forEach(item => {
+                        html += `<li>`;
+                        html += `<span class="item-name">${item.name}</span>`;
+                        if (item.co2Label) {
+                            html += `<span class="co2-badge">${item.co2Label}</span>`;
+                        }
+                        html += `</li>`;
+                    });
+                    html += '</ul>';
+                }
             } else {
-                html += '<ul>';
-                items.forEach(item => {
-                    html += `<li>${item.name}`;
-                    if (item.co2Label) html += ` <span style="color: green;">(${item.co2Label} kg CO₂)</span>`;
-                    html += '</li>';
-                });
-                html += '</ul>';
+                html += '<div class="no-items">No menu</div>';
             }
-        } else {
-            html += '<p>No menu available</p>';
-        }
+            
+            html += '</div>';
+        });
         
         html += '</div>';
     });
+    
+    html += '</div>';
+    
+    // Footer
+    html += '<footer class="footer">';
+    html += `<p>Last updated: ${new Date().toLocaleString('sv-SE')}</p>`;
+    html += '</footer>';
     
     html += '</div>';
     app.innerHTML = html;
