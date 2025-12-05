@@ -3,7 +3,7 @@
 import { NetworkError, ParseError } from '../utils/errors.js';
 
 const ALLORIGINS_PROXY = 'https://api.allorigins.win/get?url=';
-const SCRAPER_SERVICE = 'http://localhost:3001?url=';
+const SCRAPER_SERVICE = '/.netlify/functions/scrape?url=';
 const TIMEOUT = 30000;
 const MAX_RETRIES = 1;
 
