@@ -88,8 +88,8 @@ export class TimeBuildingFetcher extends MenuFetcher {
                             if (existingKeywords.has(kw)) shared++;
                         }
                         
-                        // If they share 2+ keywords, consider them duplicates
-                        return shared >= 2;
+                        // If they share 3+ keywords, consider them duplicates
+                        return shared >= 3;
                     });
                     
                     if (!isDuplicate && !hasSwedish) {
