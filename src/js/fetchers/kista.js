@@ -115,13 +115,13 @@ export class KistaFetcher extends MenuFetcher {
         if (/kitchen chooses|extra dish|onion ring|french fries|pommes/.test(lower)) return null;
         
         // Check for EXPLICIT vegan/vegetarian label FIRST (highest priority)
-        if (/\bvegan\b|\bvegetar/.test(lower)) return '🌱 Vegetarian';
+        if (/vegan|vegetar/.test(lower)) return '🌱 Vegetarian';
         
-        // Desserts - only sweet desserts (not savory pancakes/puddings)
-        if (/glass|mjukglass|pannkak.*sylt|pannkak.*grädde|dessert|crumble|cake|tart/.test(lower)) return '🍰 Dessert';
+        // Desserts - ONLY sweet desserts (very specific)
+        if (/mjukglass|glass med|pannkakor med sylt|pannkakor med grädde|dessert|crumble|cake|tart/.test(lower)) return '🍰 Dessert';
         
-        // Fish - but NOT if it says "vegan fish" or "vegetarian fish"
-        if (!/vegan|vegetar/.test(lower) && /\bfish\b|salmon|cod|tuna|seafood|shrimp|prawn|saithe|herring|plaice|haddock|halibut|sole|flounder|perch|trout|mackerel|anchov|lax|sej|torsk|kolja|rödspätta|strömming/.test(lower)) return '🐟 Fish';
+        // Fish - comprehensive list
+        if (/\bfish\b|salmon|cod|tuna|seafood|shrimp|prawn|saithe|herring|plaice|haddock|halibut|sole|flounder|perch|trout|mackerel|anchov|lax|sej|torsk|kolja|rödspätta|strömming/.test(lower)) return '🐟 Fish';
         
         // Meat - check for actual meat
         if (/ground beef|beef|pork|lamb|veal|chicken|turkey|duck|bacon|ham|sausage|korv|meatball|köttbull|biff|schnitzel|cabbage roll|kåldolm|pulled pork|fläsk|kalv|oxkött|kyckling|fajita|gyros|tikka.*chicken|burger.*beef|kabanoss/.test(lower)) return '🍖 Meat';
