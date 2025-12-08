@@ -81,7 +81,7 @@ const server = http.createServer(async (req, res) => {
     }
 });
 
-server.listen(PORT, () => {
-    console.log(`\n✓ Playwright scraper running on http://localhost:${PORT}`);
+server.listen(PORT, '0.0.0.0', () => {
+    console.log(`\n✓ Playwright scraper running on http://0.0.0.0:${PORT}`);
     console.log(`  Usage: http://localhost:${PORT}?url=<target-url>\n`);
 });
