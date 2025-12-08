@@ -3,7 +3,7 @@ const http = require('http');
 const { chromium } = require('playwright');
 
 const PORT = process.env.PORT || 3001;
-const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
 const cache = new Map();
 
 async function scrapeFoodCo(url) {
@@ -98,6 +98,6 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`\n✓ Playwright scraper running on http://0.0.0.0:${PORT}`);
-    console.log(`  Cache duration: 24 hours`);
+    console.log(`  Cache duration: 7 days`);
     console.log(`  Usage: http://localhost:${PORT}?url=<target-url>\n`);
 });
