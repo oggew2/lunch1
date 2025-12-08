@@ -5,7 +5,7 @@ import { ParseError } from '../utils/errors.js';
 
 export class CourtyardFetcher extends MenuFetcher {
     constructor() {
-        super('https://ericssonbynordrest.se/restaurang/the-courtyard/', true);
+        super('https://ericssonbynordrest.se/restaurang/the-courtyard/', false);
     }
 
     parse(html) {
