@@ -3,15 +3,24 @@ const http = require('http');
 const { chromium } = require('playwright');
 
 const PORT = process.env.PORT || 3001;
+const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours
+const cache = new Map();
 
 async function scrapeFoodCo(url) {
+    // Check cache first
+    const cached = cache.get(url);
+    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
+        console.log(`✓ Cache hit for: ${url}`);
+        return cached.data;
+    }
+
     console.log(`Scraping all days from: ${url}`);
     const browser = await chromium.launch({ headless: true });
     const page = await browser.newPage();
     
     try {
         await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
-        await page.waitForTimeout(3000);
+        await page.waitForTimeout(2000);
         
         // Check if this is a Food & Co site (needs "Hela veckan" button)
         const isFoodAndCo = url.includes('compass-group.se');
@@ -22,7 +31,7 @@ async function scrapeFoodCo(url) {
                 const wholeWeekButton = page.locator('button:has-text("Hela veckan")');
                 if (await wholeWeekButton.count() > 0) {
                     await wholeWeekButton.first().click();
-                    await page.waitForTimeout(3000);
+                    await page.waitForTimeout(2000);
                     console.log('  ✓ Clicked "Hela veckan"');
                 }
             } catch (e) {
@@ -33,12 +42,18 @@ async function scrapeFoodCo(url) {
             const allText = await page.textContent('body');
             await browser.close();
             console.log(`Total: ${allText.length} chars`);
+            
+            // Cache the result
+            cache.set(url, { data: allText, timestamp: Date.now() });
             return allText;
         } else {
             // For other sites (like Courtyard), return HTML
             const html = await page.content();
             await browser.close();
             console.log(`Total: ${html.length} bytes`);
+            
+            // Cache the result
+            cache.set(url, { data: html, timestamp: Date.now() });
             return html;
         }
     } catch (error) {
@@ -83,5 +98,6 @@ const server = http.createServer(async (req, res) => {
 
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`\n✓ Playwright scraper running on http://0.0.0.0:${PORT}`);
+    console.log(`  Cache duration: 24 hours`);
     console.log(`  Usage: http://localhost:${PORT}?url=<target-url>\n`);
 });
