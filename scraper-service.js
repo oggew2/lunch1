@@ -20,7 +20,7 @@ async function scrapeFoodCo(url) {
     
     try {
         await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
-        await page.waitForTimeout(2000);
+        await page.waitForTimeout(3000);
         
         // Check if this is a Food & Co site (needs "Hela veckan" button)
         const isFoodAndCo = url.includes('compass-group.se');
@@ -31,7 +31,7 @@ async function scrapeFoodCo(url) {
                 const wholeWeekButton = page.locator('button:has-text("Hela veckan")');
                 if (await wholeWeekButton.count() > 0) {
                     await wholeWeekButton.first().click();
-                    await page.waitForTimeout(2000);
+                    await page.waitForTimeout(5000);
                     console.log('  ✓ Clicked "Hela veckan"');
                 }
             } catch (e) {
