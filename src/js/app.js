@@ -17,8 +17,8 @@ const restaurants = [
     { id: 'timebuilding', name: 'Food & Co Time Building', fetcher: new TimeBuildingFetcher() }
 ];
 
-async function fetchMenu(restaurant, useCache = true) {
-    console.log(`[${restaurant.id}] Starting fetch...`);
+async function fetchMenu(restaurant, useCache = true, retryCount = 0) {
+    console.log(`[${restaurant.id}] Starting fetch (attempt ${retryCount + 1})...`);
     const cacheKey = `menu_${restaurant.id}_${getCurrentWeek()}_${new Date().getFullYear()}`;
     
     if (useCache) {
@@ -34,12 +34,18 @@ async function fetchMenu(restaurant, useCache = true) {
     setLoading(restaurant.id, true);
     setError(restaurant.id, null);
     
-    // Add timeout to prevent infinite loading
+    // Increase timeout for slow scrapers
     const timeoutId = setTimeout(() => {
-        console.error(`[${restaurant.id}] Timeout after 20 seconds`);
+        console.error(`[${restaurant.id}] Timeout after 45 seconds`);
         setError(restaurant.id, new Error('Request timeout'));
         setLoading(restaurant.id, false);
-    }, 20000);
+        
+        // Auto-retry once after timeout
+        if (retryCount === 0) {
+            console.log(`[${restaurant.id}] Will retry in 5 seconds...`);
+            setTimeout(() => fetchMenu(restaurant, false, retryCount + 1), 5000);
+        }
+    }, 45000);
     
     try {
         console.log(`[${restaurant.id}] Fetching HTML...`);
