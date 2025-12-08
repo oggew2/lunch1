@@ -71,20 +71,20 @@ export class CourtyardFetcher extends MenuFetcher {
     detectCategory(text) {
         const lower = text.toLowerCase();
         
-        // Desserts first (most specific)
-        if (/glass|pannkak|pancake|dessert|crumble|pudding|cake|tart|pie.*berry|pie.*fruit/.test(lower)) return '🍰 Dessert';
-        
-        // Check for EXPLICIT vegan/vegetarian label (overrides everything)
+        // Check for EXPLICIT vegan/vegetarian label FIRST (highest priority)
         if (/\bvegan\b|\bvegetar/.test(lower)) return '🌱 Vegetarian';
         
-        // Fish - comprehensive list (Swedish + English)
-        if (/\bfish\b|salmon|cod|tuna|seafood|shrimp|prawn|paella|saithe|herring|plaice|haddock|halibut|sole|flounder|perch|trout|mackerel|anchov|lax|sej|torsk|kolja|rödspätta|strömming|sill|räk|fisk|kapkummel/.test(lower)) return '🐟 Fish';
+        // Desserts - only sweet desserts (not savory pancakes/puddings)
+        if (/glass|mjukglass|pannkak.*sylt|pannkak.*grädde|dessert|crumble|cake|tart/.test(lower)) return '🍰 Dessert';
         
-        // Meat - comprehensive list (Swedish + English)
-        if (/beef|pork|lamb|veal|chicken|turkey|duck|bacon|ham|sausage|korv|meatball|köttbull|biff|schnitzel|cabbage roll|kåldolm|pulled pork|fläsk|kalv|oxkött|kyckling|nöt|kött|fajita|gyros|tikka.*chicken|burger.*beef|pannbiff/.test(lower)) return '🍖 Meat';
+        // Fish - but NOT if it says "vegan fish" or "vegetarian fish"
+        if (!/vegan|vegetar/.test(lower) && /\bfish\b|salmon|cod|tuna|seafood|shrimp|prawn|saithe|herring|plaice|haddock|halibut|sole|flounder|perch|trout|mackerel|anchov|lax|sej|torsk|kolja|rödspätta|strömming|sill|räk|fisk|kapkummel/.test(lower)) return '🐟 Fish';
         
-        // Vegetarian ingredients (after checking for meat/fish)
-        if (/veggie|tofu|tempeh|falafel|quorn|halloumi|haloumi|chickpea|lentil|bean.*patty|cauliflower|zucchini|eggplant|aubergine|soja|linser|ädelost.*paj|broccoli.*paj|sötpotatis.*feta|patties.*vegetarian/.test(lower)) return '🌱 Vegetarian';
+        // Meat - check for actual meat
+        if (/ground beef|beef|pork|lamb|veal|chicken|turkey|duck|bacon|ham|sausage|korv|meatball|köttbull|biff|schnitzel|cabbage roll|kåldolm|pulled pork|fläsk|kalv|oxkött|kyckling|nöt|kött|fajita|gyros|pannbiff|kabanoss/.test(lower)) return '🍖 Meat';
+        
+        // Vegetarian ingredients (cheese, tofu, vegetables)
+        if (/halloumi|haloumi|veggie|tofu|tempeh|falafel|quorn|chickpea|lentil|bean.*patty|cauliflower|zucchini|eggplant|aubergine|soja|linser|ädelost.*paj|broccoli.*paj|sötpotatis.*feta|patties.*vegetarian|patties.*sun.*dried|corn.*pancake|leek.*pancake/.test(lower)) return '🌱 Vegetarian';
         
         return null;
     }
