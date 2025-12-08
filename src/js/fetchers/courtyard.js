@@ -70,15 +70,22 @@ export class CourtyardFetcher extends MenuFetcher {
     
     detectCategory(text) {
         const lower = text.toLowerCase();
-        // Check desserts first
-        if (/glass|pannkak|dessert|crumble/.test(lower)) return '🍰 Dessert';
+        
+        // Desserts first (most specific)
+        if (/glass|pannkak|pancake|dessert|crumble|pudding|cake|tart|pie.*berry|pie.*fruit/.test(lower)) return '🍰 Dessert';
+        
         // Check for EXPLICIT vegan/vegetarian label (overrides everything)
-        if (/vegan|vegetar/.test(lower)) return '🌱 Vegetarian';
-        // Then check for actual fish/meat ingredients
-        if (/fish|salmon|cod|tuna|seafood|shrimp|lax|torsk|sill|räk|fisk|rödspätta|kolja|sej|kapkummel/.test(lower)) return '🐟 Fish';
-        if (/chicken|beef|pork|lamb|meat|kyckling|nöt|fläsk|lamm|kött|bacon|korv|biff|schnitzel/.test(lower)) return '🍖 Meat';
-        // Then check for vegetarian ingredients (tofu, quorn, etc)
-        if (/veggie|tofu|falafel|quorn|halloumi|haloumi|soja|linser|ädelost.*paj/.test(lower)) return '🌱 Vegetarian';
+        if (/\bvegan\b|\bvegetar/.test(lower)) return '🌱 Vegetarian';
+        
+        // Fish - comprehensive list (Swedish + English)
+        if (/\bfish\b|salmon|cod|tuna|seafood|shrimp|prawn|paella|saithe|herring|plaice|haddock|halibut|sole|flounder|perch|trout|mackerel|anchov|lax|sej|torsk|kolja|rödspätta|strömming|sill|räk|fisk|kapkummel/.test(lower)) return '🐟 Fish';
+        
+        // Meat - comprehensive list (Swedish + English)
+        if (/beef|pork|lamb|veal|chicken|turkey|duck|bacon|ham|sausage|korv|meatball|köttbull|biff|schnitzel|cabbage roll|kåldolm|pulled pork|fläsk|kalv|oxkött|kyckling|nöt|kött|fajita|gyros|tikka.*chicken|burger.*beef|pannbiff/.test(lower)) return '🍖 Meat';
+        
+        // Vegetarian ingredients (after checking for meat/fish)
+        if (/veggie|tofu|tempeh|falafel|quorn|halloumi|haloumi|chickpea|lentil|bean.*patty|cauliflower|zucchini|eggplant|aubergine|soja|linser|ädelost.*paj|broccoli.*paj|sötpotatis.*feta|patties.*vegetarian/.test(lower)) return '🌱 Vegetarian';
+        
         return null;
     }
 }

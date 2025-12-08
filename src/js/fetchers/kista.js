@@ -110,15 +110,25 @@ export class KistaFetcher extends MenuFetcher {
     
     detectCategory(text) {
         const lower = text.toLowerCase();
+        
         // Skip generic descriptions
-        if (/kitchen chooses|extra dish|onion ring/.test(lower)) return null;
-        // Check for EXPLICIT vegetarian label (overrides ingredients)
-        if (/vegan|vegetar/.test(lower)) return '🌱 Vegetarian';
-        // Then check for actual meat/fish ingredients
-        if (/beef|pork|lamb|veal|chicken|drumstick|ribs|chorizo|salsiccia|bratwurst|cabbage roll|meatball/.test(lower)) return '🍖 Meat';
-        if (/fish|salmon|cod|tuna|seafood|shrimp|paella|saithe/.test(lower)) return '🐟 Fish';
-        // Then vegetarian ingredients
-        if (/veggie|tofu|falafel|quorn|halloumi|haloumi|chickpea|cauliflower|zucchini|patties|pizza.*goat|pizza.*cheese|pea.*pancake|leek|spinach|ricotta|cannelloni|pasta.*mushroom|spaghetti.*mushroom/.test(lower)) return '🌱 Vegetarian';
+        if (/kitchen chooses|extra dish|onion ring|french fries|pommes/.test(lower)) return null;
+        
+        // Desserts first (most specific)
+        if (/glass|pannkak|pancake|dessert|crumble|pudding|cake|tart|pie.*berry|pie.*fruit/.test(lower)) return '🍰 Dessert';
+        
+        // Check for EXPLICIT vegetarian/vegan label (overrides ingredients)
+        if (/\bvegan\b|\bvegetar/.test(lower)) return '🌱 Vegetarian';
+        
+        // Fish - comprehensive list
+        if (/\bfish\b|salmon|cod|tuna|seafood|shrimp|prawn|paella|saithe|herring|plaice|haddock|halibut|sole|flounder|perch|trout|mackerel|anchov|lax|sej|torsk|kolja|rödspätta|strömming/.test(lower)) return '🐟 Fish';
+        
+        // Meat - comprehensive list including Swedish dishes
+        if (/beef|pork|lamb|veal|chicken|turkey|duck|bacon|ham|sausage|korv|meatball|köttbull|biff|schnitzel|cabbage roll|kåldolm|pulled pork|fläsk|kalv|oxkött|kyckling|fajita|gyros|tikka.*chicken|burger.*beef/.test(lower)) return '🍖 Meat';
+        
+        // Vegetarian ingredients (after checking for meat/fish)
+        if (/veggie|tofu|tempeh|falafel|quorn|halloumi|haloumi|chickpea|lentil|bean.*patty|cauliflower|zucchini|eggplant|aubergine|patties.*vegetarian|patties.*sun.*dried|pizza.*goat|pizza.*cheese|pea.*pancake|leek.*pancake|corn.*pancake|spinach|ricotta|cannelloni|pasta.*mushroom|spaghetti.*mushroom|risotto.*mushroom|nacho.*vegetarian|springroll.*vegetarian/.test(lower)) return '🌱 Vegetarian';
+        
         return null;
     }
 }
