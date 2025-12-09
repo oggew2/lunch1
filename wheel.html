@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunch Wheel - Kista</title>
+    <link rel="stylesheet" href="src/styles/wheel.css">
+</head>
+<body>
+    <div class="wheel-container">
+        <header class="header">
+            <h1>🎡 Lunch Wheel</h1>
+            <a href="index.html" class="nav-btn">← Back to Menu</a>
+        </header>
+
+        <div class="controls">
+            <div class="restaurant-controls">
+                <div class="restaurant-option" data-id="kista">
+                    <input type="checkbox" id="kista-check" checked>
+                    <label for="kista-check">Food & Co Kista</label>
+                    <div class="vote-controls">
+                        <button class="vote-btn" data-action="minus">−</button>
+                        <span class="vote-count">1</span>
+                        <button class="vote-btn" data-action="plus">+</button>
+                    </div>
+                </div>
+                <div class="restaurant-option" data-id="courtyard">
+                    <input type="checkbox" id="courtyard-check" checked>
+                    <label for="courtyard-check">The Courtyard</label>
+                    <div class="vote-controls">
+                        <button class="vote-btn" data-action="minus">−</button>
+                        <span class="vote-count">1</span>
+                        <button class="vote-btn" data-action="plus">+</button>
+                    </div>
+                </div>
+                <div class="restaurant-option" data-id="timebuilding">
+                    <input type="checkbox" id="timebuilding-check" checked>
+                    <label for="timebuilding-check">Food & Co Time Building</label>
+                    <div class="vote-controls">
+                        <button class="vote-btn" data-action="minus">−</button>
+                        <span class="vote-count">1</span>
+                        <button class="vote-btn" data-action="plus">+</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="wheel-wrapper">
+            <canvas id="wheel" width="500" height="500"></canvas>
+            <button id="spin-btn" class="spin-btn">SPIN!</button>
+        </div>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script src="src/js/wheel.js"></script>
+</body>
+</html>

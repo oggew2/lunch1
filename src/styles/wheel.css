@@ -1,0 +1,195 @@
+:root {
+    --primary: #0082C8;
+    --background: #FFFFFF;
+    --surface: #F5F5F5;
+    --text-primary: #212121;
+    --text-secondary: #757575;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: var(--background);
+    color: var(--text-primary);
+    min-height: 100vh;
+}
+
+.wheel-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid var(--surface);
+}
+
+.header h1 {
+    font-size: 28px;
+    color: var(--primary);
+}
+
+.nav-btn {
+    padding: 10px 20px;
+    background: var(--primary);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: opacity 0.2s;
+}
+
+.nav-btn:hover {
+    opacity: 0.9;
+}
+
+.controls {
+    margin-bottom: 30px;
+}
+
+.restaurant-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.restaurant-option {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: var(--surface);
+    border-radius: 8px;
+}
+
+.restaurant-option input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.restaurant-option label {
+    flex: 1;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.vote-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.vote-btn {
+    width: 32px;
+    height: 32px;
+    border: 2px solid var(--primary);
+    background: white;
+    color: var(--primary);
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+}
+
+.vote-btn:hover:not(:disabled) {
+    background: var(--primary);
+    color: white;
+}
+
+.vote-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.vote-count {
+    min-width: 30px;
+    text-align: center;
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.wheel-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    margin: 40px 0;
+}
+
+#wheel {
+    max-width: 100%;
+    height: auto;
+}
+
+.spin-btn {
+    padding: 15px 50px;
+    font-size: 24px;
+    font-weight: bold;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    box-shadow: 0 4px 12px rgba(0, 130, 200, 0.3);
+}
+
+.spin-btn:hover:not(:disabled) {
+    transform: scale(1.05);
+}
+
+.spin-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.result {
+    text-align: center;
+    font-size: 32px;
+    font-weight: bold;
+    min-height: 50px;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 600px) {
+    .header h1 {
+        font-size: 22px;
+    }
+    
+    .restaurant-option {
+        flex-wrap: wrap;
+    }
+    
+    #wheel {
+        width: 100%;
+        height: auto;
+    }
+    
+    .spin-btn {
+        padding: 12px 40px;
+        font-size: 20px;
+    }
+    
+    .result {
+        font-size: 24px;
+    }
+}

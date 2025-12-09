@@ -86,8 +86,11 @@ function render() {
     
     html += '<header class="header">';
     html += '<h1>🍽️ Kista Lunch Menu</h1>';
+    html += '<div class="header-controls">';
     html += `<div class="week-info">Week ${state.currentWeek}</div>`;
+    html += '<a href="wheel.html" class="wheel-btn">🎡 Spin Wheel</a>';
     html += '<button onclick="localStorage.clear(); location.reload();" class="refresh-btn">↻ Refresh</button>';
+    html += '</div>';
     html += '</header>';
     
     html += '<div class="days-grid">';
