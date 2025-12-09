@@ -19,7 +19,7 @@ async function scrapeFoodCo(url) {
     const page = await browser.newPage();
     
     try {
-        await page.goto(url, { waitUntil: 'networkidle', timeout: 30000 });
+        await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
         await page.waitForTimeout(3000);
         
         // Check if this is a Food & Co site (needs "Hela veckan" button)
