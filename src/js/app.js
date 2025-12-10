@@ -12,7 +12,7 @@ import { createMenuGrid } from './components/menuGrid.js';
 import { createFooter, updateFooterTimestamp } from './components/footer.js';
 
 const restaurants = [
-    { id: 'kista', name: 'Food & Co Kista', fetcher: new KistaFetcher() },
+    { id: 'kista', name: 'Food & Co Kista (Tele2)', fetcher: new KistaFetcher() },
     { id: 'courtyard', name: 'The Courtyard', fetcher: new CourtyardFetcher() },
     { id: 'timebuilding', name: 'Food & Co Time Building', fetcher: new TimeBuildingFetcher() }
 ];

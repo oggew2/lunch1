@@ -1,5 +1,5 @@
 const restaurants = [
-    { id: 'kista', name: 'Food & Co Kista', color: '#FF6B6B', votes: 1, enabled: true },
+    { id: 'kista', name: 'Food & Co Kista (Tele2)', color: '#FF6B6B', votes: 1, enabled: true },
     { id: 'courtyard', name: 'The Courtyard', color: '#4ECDC4', votes: 1, enabled: true },
     { id: 'timebuilding', name: 'Food & Co Time Building', color: '#45B7D1', votes: 1, enabled: true }
 ];
