@@ -81,6 +81,19 @@ body {
     display: flex;
     flex-direction: column;
     gap: 16px;
+    transition: all 0.3s ease;
+}
+
+.day-column:not(.today) {
+    opacity: 0.75;
+}
+
+.day-column.today {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.08), rgba(255, 152, 0, 0.05));
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 2px 12px rgba(255, 193, 7, 0.15);
+    transform: scale(1.02);
 }
 
 .day-header {
@@ -94,6 +107,12 @@ body {
     position: sticky;
     top: 0;
     z-index: 10;
+}
+
+.day-header.today {
+    background: linear-gradient(135deg, #FF9800, #FFC107);
+    box-shadow: 0 4px 16px rgba(255, 152, 0, 0.3);
+    transform: translateY(-2px);
 }
 
 .restaurant-card {
@@ -197,6 +216,11 @@ body {
     
     .day-column {
         min-width: 280px;
+    }
+    
+    .day-column.today {
+        transform: scale(1.01);
+        padding: 6px;
     }
     
     .day-header {

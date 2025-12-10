@@ -96,8 +96,9 @@ function render() {
     html += '<div class="days-grid">';
     
     days.forEach((day, i) => {
-        html += `<div class="day-column">`;
-        html += `<h2 class="day-header">${dayLabels[i]}</h2>`;
+        const isToday = day === state.selectedDay;
+        html += `<div class="day-column ${isToday ? 'today' : ''}">`;
+        html += `<h2 class="day-header ${isToday ? 'today' : ''}">${dayLabels[i]}</h2>`;
         
         restaurants.forEach(restaurant => {
             html += `<div class="restaurant-card">`;
