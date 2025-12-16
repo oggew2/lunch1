@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     }
     
     const restaurantUrls = {
-        kista: 'https://www.compass-group.se/foodco/meny/kista-tele2/',
+        kista: 'https://www.compass-group.se/restauranger-och-menyer/foodandco/kista/',
         courtyard: 'https://ericssonbynordrest.se/restaurang/the-courtyard/',
         timebuilding: 'https://www.compass-group.se/restauranger-och-menyer/foodandco/food--co-timebuilding/'
     };

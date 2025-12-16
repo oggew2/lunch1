@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Scrape Food & Co Kista
-        run: curl -f "https://lunch1-1.onrender.com?url=https://www.compass-group.se/foodco/meny/kista-tele2/"
+        run: curl -f "https://lunch1-1.onrender.com?url=https://www.compass-group.se/restauranger-och-menyer/foodandco/kista/"
         
       - name: Scrape The Courtyard  
         run: curl -f "https://lunch1-1.onrender.com?url=https://ericssonbynordrest.se/restaurang/the-courtyard/"
