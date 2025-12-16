@@ -2,19 +2,20 @@
 
 import { NetworkError, ParseError } from '../utils/errors.js';
 
-const VERCEL_API = '/api/menu?restaurant=';
+const SCRAPER_SERVICE = 'https://kista-lunch-scraper.onrender.com?url=';
 const TIMEOUT = 30000;
 
 export class MenuFetcher {
-    constructor(restaurantId) {
-        this.restaurantId = restaurantId;
+    constructor(url) {
+        this.url = url;
     }
 
     async fetch() {
-        console.log(`Fetching: ${this.restaurantId}`);
+        console.log(`Fetching: ${this.url}`);
         
         try {
-            const response = await this.fetchWithTimeout(VERCEL_API + this.restaurantId);
+            const scraperUrl = SCRAPER_SERVICE + encodeURIComponent(this.url);
+            const response = await this.fetchWithTimeout(scraperUrl);
             if (!response.ok) {
                 throw new NetworkError(`HTTP ${response.status}`);
             }

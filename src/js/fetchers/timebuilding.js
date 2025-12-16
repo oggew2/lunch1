@@ -6,7 +6,7 @@ import { detectFoodCategory } from '../utils/foodCategories.js';
 
 export class TimeBuildingFetcher extends MenuFetcher {
     constructor() {
-        super('timebuilding');
+        super('https://www.compass-group.se/restauranger-och-menyer/foodandco/food--co-timebuilding/');
     }
 
     parse(html) {
