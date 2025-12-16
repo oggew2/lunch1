@@ -2,6 +2,7 @@
 
 import { MenuFetcher } from './base.js';
 import { ParseError } from '../utils/errors.js';
+import { detectFoodCategory } from '../utils/foodCategories.js';
 
 export class KistaFetcher extends MenuFetcher {
     constructor() {
@@ -100,35 +101,11 @@ export class KistaFetcher extends MenuFetcher {
                 days[key] = uniqueLines.slice(0, 3).map(name => ({ 
                     name: name.trim(), 
                     co2Label: null,
-                    category: this.detectCategory(name)
+                    category: detectFoodCategory(name)
                 }));
             }
         });
 
         return days;
-    }
-    
-    detectCategory(text) {
-        const lower = text.toLowerCase();
-        
-        // Skip generic descriptions
-        if (/kitchen chooses|extra dish|onion ring|french fries|pommes/.test(lower)) return null;
-        
-        // Check for EXPLICIT vegan/vegetarian label FIRST (highest priority)
-        if (/vegan|vegetar/.test(lower)) return '🌱 Vegetarian';
-        
-        // Desserts - ONLY sweet desserts (very specific)
-        if (/mjukglass|glass med|pannkakor med sylt|pannkakor med grädde|dessert|crumble|cake|tart/.test(lower)) return '🍰 Dessert';
-        
-        // Fish - comprehensive list
-        if (/\bfish\b|salmon|cod|tuna|seafood|shrimp|prawn|saithe|herring|plaice|haddock|halibut|sole|flounder|perch|trout|mackerel|anchov|lax|sej|torsk|kolja|rödspätta|strömming/.test(lower)) return '🐟 Fish';
-        
-        // Meat - check for actual meat
-        if (/ground beef|beef|pork|lamb|veal|chicken|turkey|duck|bacon|ham|sausage|korv|meatball|köttbull|biff|schnitzel|cabbage roll|kåldolm|pulled pork|fläsk|kalv|oxkött|kyckling|fajita|gyros|tikka.*chicken|burger.*beef|kabanoss/.test(lower)) return '🍖 Meat';
-        
-        // Vegetarian ingredients (cheese, tofu, vegetables)
-        if (/halloumi|haloumi|veggie|tofu|tempeh|falafel|quorn|chickpea|lentil|bean.*patty|cauliflower|zucchini|eggplant|aubergine|patties.*vegetarian|patties.*sun.*dried|pizza.*goat|pizza.*cheese|corn.*pancake|leek.*pancake|spinach|ricotta|cannelloni|pasta.*mushroom|spaghetti.*mushroom|risotto.*mushroom|nacho.*vegetarian|springroll.*vegetarian/.test(lower)) return '🌱 Vegetarian';
-        
-        return null;
     }
 }

@@ -2,6 +2,7 @@
 
 import { MenuFetcher } from './base.js';
 import { ParseError } from '../utils/errors.js';
+import { detectFoodCategory } from '../utils/foodCategories.js';
 
 export class CourtyardFetcher extends MenuFetcher {
     constructor() {
@@ -58,7 +59,7 @@ export class CourtyardFetcher extends MenuFetcher {
                 const text = ratter.textContent.trim();
                 if (!text || text.length < 5) return;
                 
-                const category = this.detectCategory(text);
+                const category = detectFoodCategory(text);
                 items.push({ name: text, category });
             });
             
@@ -66,26 +67,5 @@ export class CourtyardFetcher extends MenuFetcher {
         });
 
         return days;
-    }
-    
-    detectCategory(text) {
-        const lower = text.toLowerCase();
-        
-        // Check for EXPLICIT vegan/vegetarian label FIRST (highest priority)
-        if (/vegan|vegetar/.test(lower)) return '🌱 Vegetarian';
-        
-        // Desserts - ONLY sweet desserts (very specific)
-        if (/mjukglass|glass med|pannkakor med sylt|pannkakor med grädde|dessert|crumble|cake|tart/.test(lower)) return '🍰 Dessert';
-        
-        // Fish - comprehensive list
-        if (/\bfish\b|salmon|cod|tuna|seafood|shrimp|prawn|saithe|herring|plaice|haddock|halibut|sole|flounder|perch|trout|mackerel|anchov|lax|sej|torsk|kolja|rödspätta|strömming|sill|räk|fisk|kapkummel/.test(lower)) return '🐟 Fish';
-        
-        // Meat - check for actual meat
-        if (/ground beef|beef|pork|lamb|veal|chicken|turkey|duck|bacon|ham|sausage|korv|meatball|köttbull|biff|schnitzel|cabbage roll|kåldolm|pulled pork|fläsk|kalv|oxkött|kyckling|nöt|kött|fajita|gyros|pannbiff|kabanoss/.test(lower)) return '🍖 Meat';
-        
-        // Vegetarian ingredients (cheese, tofu, vegetables)
-        if (/halloumi|haloumi|veggie|tofu|tempeh|falafel|quorn|chickpea|lentil|bean.*patty|cauliflower|zucchini|eggplant|aubergine|soja|linser|ädelost.*paj|broccoli.*paj|sötpotatis.*feta|patties.*vegetarian|patties.*sun.*dried|corn.*pancake|leek.*pancake/.test(lower)) return '🌱 Vegetarian';
-        
-        return null;
     }
 }
