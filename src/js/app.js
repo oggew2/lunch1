@@ -10,6 +10,7 @@ import { createHeader, updateHeaderLoading } from './components/header.js';
 import { createDateSelector } from './components/dateSelector.js';
 import { createMenuGrid } from './components/menuGrid.js';
 import { createFooter, updateFooterTimestamp } from './components/footer.js';
+import { showProgressPopup, updateProgress, hideProgressPopup } from './components/progressPopup.js';
 
 const restaurants = [
     { id: 'kista', name: 'Food & Co Kista (Tele2)', fetcher: new KistaFetcher() },
@@ -17,7 +18,7 @@ const restaurants = [
     { id: 'timebuilding', name: 'Food & Co Time Building', fetcher: new TimeBuildingFetcher() }
 ];
 
-async function fetchMenu(restaurant, useCache = true, retryCount = 0) {
+async function fetchMenu(restaurant, useCache = true, retryCount = 0, showProgress = false) {
     console.log(`[${restaurant.id}] Starting fetch (attempt ${retryCount + 1})...`);
     const cacheKey = `menu_${restaurant.id}_${getCurrentWeek()}_${new Date().getFullYear()}`;
     
@@ -36,20 +37,26 @@ async function fetchMenu(restaurant, useCache = true, retryCount = 0) {
     
     // Increase timeout for slow scrapers
     const timeoutId = setTimeout(() => {
-        console.error(`[${restaurant.id}] Timeout after 45 seconds`);
+        console.error(`[${restaurant.id}] Timeout after 60 seconds`);
         setError(restaurant.id, new Error('Request timeout'));
         setLoading(restaurant.id, false);
         
         // Auto-retry once after timeout
         if (retryCount === 0) {
             console.log(`[${restaurant.id}] Will retry in 5 seconds...`);
-            setTimeout(() => fetchMenu(restaurant, false, retryCount + 1), 5000);
+            setTimeout(() => fetchMenu(restaurant, false, retryCount + 1, showProgress), 5000);
         }
-    }, 45000);
+    }, 60000);
     
     try {
         console.log(`[${restaurant.id}] Fetching HTML...`);
-        const html = await restaurant.fetcher.fetch();
+        
+        // Progress callback for first-time cache loading
+        const onProgress = showProgress ? (progress) => {
+            updateProgress(restaurant.id, progress.status, progress.step);
+        } : null;
+        
+        const html = await restaurant.fetcher.fetch(onProgress);
         console.log(`[${restaurant.id}] Parsing HTML (${html.length} bytes)...`);
         const menu = restaurant.fetcher.parse(html);
         console.log(`[${restaurant.id}] Parsed menu:`, menu);
@@ -70,7 +77,30 @@ async function fetchMenu(restaurant, useCache = true, retryCount = 0) {
 
 async function fetchAllMenus(useCache = true) {
     updateHeaderLoading(true);
-    await Promise.all(restaurants.map(r => fetchMenu(r, useCache)));
+    
+    // Check if this is first-time loading (no cache for any restaurant)
+    const currentWeek = getCurrentWeek();
+    const currentYear = new Date().getFullYear();
+    const isFirstTime = restaurants.every(r => {
+        const cacheKey = `menu_${r.id}_${currentWeek}_${currentYear}`;
+        return !loadFromCache(cacheKey);
+    });
+    
+    if (isFirstTime && useCache) {
+        showProgressPopup();
+        
+        // Fetch with progress tracking
+        await Promise.all(restaurants.map(r => fetchMenu(r, useCache, 0, true)));
+        
+        // Hide popup after a short delay
+        setTimeout(() => {
+            hideProgressPopup();
+        }, 2000);
+    } else {
+        // Normal fetch without progress popup
+        await Promise.all(restaurants.map(r => fetchMenu(r, useCache)));
+    }
+    
     updateHeaderLoading(false);
     updateFooterTimestamp();
 }
