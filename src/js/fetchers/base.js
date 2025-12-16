@@ -2,7 +2,7 @@
 
 import { NetworkError, ParseError } from '../utils/errors.js';
 
-const SCRAPER_SERVICE = 'https://kista-lunch-scraper.onrender.com?url=';
+const SCRAPER_SERVICE = 'https://lunch1-1.onrender.com?url=';
 const TIMEOUT = 30000;
 
 export class MenuFetcher {

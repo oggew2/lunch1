@@ -19,7 +19,7 @@ export default async function handler(req, res) {
     
     try {
         // Use Render scraper service (with headless browser)
-        const scraperUrl = `https://kista-lunch-scraper.onrender.com?url=${encodeURIComponent(targetUrl)}`;
+        const scraperUrl = `https://lunch1-1.onrender.com?url=${encodeURIComponent(targetUrl)}`;
         const response = await fetch(scraperUrl);
         
         if (!response.ok) {
