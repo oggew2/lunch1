@@ -6,7 +6,7 @@ import { detectFoodCategory } from '../utils/foodCategories.js';
 
 export class KistaFetcher extends MenuFetcher {
     constructor() {
-        super('https://www.compass-group.se/restauranger-och-menyer/foodandco/kista/');
+        super('kista');
     }
 
     parse(html) {

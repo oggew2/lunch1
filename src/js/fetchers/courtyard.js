@@ -6,7 +6,7 @@ import { detectFoodCategory } from '../utils/foodCategories.js';
 
 export class CourtyardFetcher extends MenuFetcher {
     constructor() {
-        super('https://ericssonbynordrest.se/restaurang/the-courtyard/');
+        super('courtyard');
     }
 
     parse(html) {

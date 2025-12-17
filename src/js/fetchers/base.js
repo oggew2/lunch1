@@ -2,20 +2,19 @@
 
 import { NetworkError, ParseError } from '../utils/errors.js';
 
-const SCRAPER_SERVICE = 'https://lunch1-1.onrender.com?url=';
+const VERCEL_API = '/api/menu?restaurant=';
 const TIMEOUT = 60000;
 
 export class MenuFetcher {
-    constructor(url) {
-        this.url = url;
+    constructor(restaurantId) {
+        this.restaurantId = restaurantId;
     }
 
     async fetch() {
-        console.log(`Fetching: ${this.url}`);
+        console.log(`Fetching: ${this.restaurantId}`);
         
         try {
-            const scraperUrl = SCRAPER_SERVICE + encodeURIComponent(this.url);
-            const response = await this.fetchWithTimeout(scraperUrl);
+            const response = await this.fetchWithTimeout(VERCEL_API + this.restaurantId);
             if (!response.ok) {
                 throw new NetworkError(`HTTP ${response.status}`);
             }
