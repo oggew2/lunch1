@@ -1,5 +1,8 @@
 // Progress popup for first-time cache loading
 
+let progressInterval = null;
+let startTime = null;
+
 export function showProgressPopup() {
     const popup = document.createElement('div');
     popup.id = 'progress-popup';
@@ -8,20 +11,10 @@ export function showProgressPopup() {
             <div class="progress-card">
                 <h3>🎉 You're the first visitor this week!</h3>
                 <p>Thanks for being awesome! We're fetching fresh menu data for everyone.</p>
-                <div class="progress-steps">
-                    <div class="progress-step" id="step-kista">
-                        <span class="step-icon">⏳</span>
-                        <span class="step-text">Food & Co Kista</span>
-                    </div>
-                    <div class="progress-step" id="step-courtyard">
-                        <span class="step-icon">⏳</span>
-                        <span class="step-text">The Courtyard</span>
-                    </div>
-                    <div class="progress-step" id="step-timebuilding">
-                        <span class="step-icon">⏳</span>
-                        <span class="step-text">Food & Co Time Building</span>
-                    </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar"></div>
                 </div>
+                <p class="progress-text" id="progress-text">Starting...</p>
                 <p class="progress-joke">💡 Fun fact: You're making lunch faster for hundreds of people today!</p>
             </div>
         </div>
@@ -48,24 +41,28 @@ export function showProgressPopup() {
             background: white;
             padding: 2rem;
             border-radius: 12px;
-            max-width: 400px;
+            max-width: 500px;
             text-align: center;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
         }
-        .progress-steps {
+        .progress-bar-container {
+            width: 100%;
+            height: 30px;
+            background: #f0f0f0;
+            border-radius: 15px;
+            overflow: hidden;
             margin: 1.5rem 0;
         }
-        .progress-step {
-            display: flex;
-            align-items: center;
-            margin: 0.5rem 0;
-            padding: 0.5rem;
-            border-radius: 6px;
-            background: #f5f5f5;
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #4CAF50, #8BC34A);
+            width: 0%;
+            transition: width 0.5s ease;
         }
-        .step-icon {
-            margin-right: 0.5rem;
-            font-size: 1.2em;
+        .progress-text {
+            font-weight: bold;
+            color: #333;
+            margin: 0.5rem 0;
         }
         .progress-joke {
             font-style: italic;
@@ -74,51 +71,65 @@ export function showProgressPopup() {
         }
     `;
     document.head.appendChild(style);
+    
+    // Start progress simulation
+    startTime = Date.now();
+    simulateProgress();
 }
 
-export function updateProgress(restaurant, status, step) {
-    const stepElement = document.getElementById(`step-${restaurant}`);
-    if (!stepElement) return;
+function simulateProgress() {
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
+    if (!progressBar || !progressText) return;
     
-    const icon = stepElement.querySelector('.step-icon');
-    const text = stepElement.querySelector('.step-text');
+    progressInterval = setInterval(() => {
+        const elapsed = Date.now() - startTime;
+        const estimatedTotal = 40000; // 40 seconds estimated
+        const progress = Math.min((elapsed / estimatedTotal) * 100, 95);
+        
+        progressBar.style.width = progress + '%';
+        
+        // Update text based on progress
+        if (progress < 20) {
+            progressText.textContent = '🔄 Loading restaurant pages...';
+        } else if (progress < 50) {
+            progressText.textContent = '⚡ Clicking "Hela veckan" buttons...';
+        } else if (progress < 80) {
+            progressText.textContent = '📋 Extracting menu data...';
+        } else {
+            progressText.textContent = '✨ Almost done...';
+        }
+    }, 500);
+}
+
+export function completeProgress() {
+    const progressBar = document.getElementById('progress-bar');
+    const progressText = document.getElementById('progress-text');
     
-    switch (status) {
-        case 'starting':
-        case 'loading':
-            icon.textContent = '🔄';
-            text.textContent = `${getRestaurantName(restaurant)}: ${step}`;
-            break;
-        case 'clicking':
-        case 'extracting':
-            icon.textContent = '⚡';
-            text.textContent = `${getRestaurantName(restaurant)}: ${step}`;
-            break;
-        case 'complete':
-            icon.textContent = '✅';
-            text.textContent = `${getRestaurantName(restaurant)}: Complete!`;
-            stepElement.style.background = '#e8f5e8';
-            break;
-        case 'error':
-            icon.textContent = '❌';
-            text.textContent = `${getRestaurantName(restaurant)}: Error`;
-            stepElement.style.background = '#ffe8e8';
-            break;
+    if (progressBar && progressText) {
+        progressBar.style.width = '100%';
+        progressText.textContent = '✅ Complete! Loading menus...';
+    }
+    
+    if (progressInterval) {
+        clearInterval(progressInterval);
+        progressInterval = null;
     }
 }
 
 export function hideProgressPopup() {
+    if (progressInterval) {
+        clearInterval(progressInterval);
+        progressInterval = null;
+    }
+    
     const popup = document.getElementById('progress-popup');
     if (popup) {
         popup.remove();
     }
 }
 
-function getRestaurantName(id) {
-    const names = {
-        kista: 'Food & Co Kista',
-        courtyard: 'The Courtyard',
-        timebuilding: 'Food & Co Time Building'
-    };
-    return names[id] || id;
+// Legacy function for compatibility
+export function updateProgress() {
+    // No-op, using simulated progress instead
 }
