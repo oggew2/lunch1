@@ -3,6 +3,7 @@ const http = require('http');
 const { chromium } = require('playwright');
 
 const PORT = process.env.PORT || 3001;
+const VERSION = '2.0.1'; // Added for deployment verification
 const CACHE_DURATION = 7 * 24 * 60 * 60 * 1000; // 7 days
 const cache = new Map();
 const inProgress = new Map(); // Prevent duplicate scrapes
@@ -99,6 +100,13 @@ const server = http.createServer(async (req, res) => {
         console.log('Cache cleared');
         res.writeHead(200, { 'Content-Type': 'application/json' });
         res.end(JSON.stringify({ success: true, message: 'Cache cleared' }));
+        return;
+    }
+    
+    // Version endpoint
+    if (urlParams.pathname === '/version') {
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ version: VERSION }));
         return;
     }
     
