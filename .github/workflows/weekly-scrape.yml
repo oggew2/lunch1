@@ -4,9 +4,6 @@ on:
     - cron: '0 6 * * 1'  # Monday 6 AM UTC = 7 AM CET
   workflow_dispatch:
 
-env:
-  VERCEL_URL: ${{ vars.VERCEL_URL || 'https://lunch1.vercel.app' }}
-
 jobs:
   warm-cache:
     runs-on: ubuntu-latest
@@ -19,12 +16,11 @@ jobs:
       - name: Clear Render cache
         run: curl -s "https://lunch1-1.onrender.com/clear-cache"
       
-      # Hit Vercel API to populate EDGE cache
-      - name: Warm Vercel edge cache - Kista
-        run: curl -sf --max-time 180 "${{ env.VERCEL_URL }}/api/menu?restaurant=kista"
+      - name: Warm edge cache - Kista
+        run: curl -sf --max-time 180 "https://lunch1.vercel.app/api/menu?restaurant=kista"
         
-      - name: Warm Vercel edge cache - Courtyard
-        run: curl -sf --max-time 180 "${{ env.VERCEL_URL }}/api/menu?restaurant=courtyard"
+      - name: Warm edge cache - Courtyard
+        run: curl -sf --max-time 180 "https://lunch1.vercel.app/api/menu?restaurant=courtyard"
         
-      - name: Warm Vercel edge cache - Time Building
-        run: curl -sf --max-time 180 "${{ env.VERCEL_URL }}/api/menu?restaurant=timebuilding"
+      - name: Warm edge cache - Time Building
+        run: curl -sf --max-time 180 "https://lunch1.vercel.app/api/menu?restaurant=timebuilding"
