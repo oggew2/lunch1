@@ -92,6 +92,16 @@ const server = http.createServer(async (req, res) => {
     }
     
     const urlParams = new URL(req.url, `http://localhost:${PORT}`);
+    
+    // Clear cache endpoint
+    if (urlParams.pathname === '/clear-cache') {
+        cache.clear();
+        console.log('Cache cleared');
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: true, message: 'Cache cleared' }));
+        return;
+    }
+    
     const targetUrl = urlParams.searchParams.get('url');
     
     if (!targetUrl) {
