@@ -4,23 +4,27 @@ on:
     - cron: '0 6 * * 1'  # Monday 6 AM UTC = 7 AM CET
   workflow_dispatch:
 
+env:
+  VERCEL_URL: ${{ vars.VERCEL_URL || 'https://lunch1.vercel.app' }}
+
 jobs:
-  scrape:
+  warm-cache:
     runs-on: ubuntu-latest
     steps:
       - name: Wake up Render service
         run: |
           curl -s "https://lunch1-1.onrender.com/version" || true
-          sleep 60  # Wait for cold start
+          sleep 60
       
-      - name: Clear old cache
+      - name: Clear Render cache
         run: curl -s "https://lunch1-1.onrender.com/clear-cache"
       
-      - name: Scrape Food & Co Kista
-        run: curl -sf --max-time 120 "https://lunch1-1.onrender.com?url=https://www.compass-group.se/restauranger-och-menyer/foodandco/kista/"
+      # Hit Vercel API to populate EDGE cache
+      - name: Warm Vercel edge cache - Kista
+        run: curl -sf --max-time 180 "${{ env.VERCEL_URL }}/api/menu?restaurant=kista"
         
-      - name: Scrape The Courtyard  
-        run: curl -sf --max-time 120 "https://lunch1-1.onrender.com?url=https://ericssonbynordrest.se/restaurang/the-courtyard/"
+      - name: Warm Vercel edge cache - Courtyard
+        run: curl -sf --max-time 180 "${{ env.VERCEL_URL }}/api/menu?restaurant=courtyard"
         
-      - name: Scrape Food & Co Time Building
-        run: curl -sf --max-time 120 "https://lunch1-1.onrender.com?url=https://www.compass-group.se/restauranger-och-menyer/foodandco/food--co-timebuilding/"
+      - name: Warm Vercel edge cache - Time Building
+        run: curl -sf --max-time 180 "${{ env.VERCEL_URL }}/api/menu?restaurant=timebuilding"
