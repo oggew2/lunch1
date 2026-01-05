@@ -8,71 +8,70 @@ const cache = new Map();
 const inProgress = new Map(); // Prevent duplicate scrapes
 
 async function scrapeFoodCo(url) {
-    // Check cache first
     const cached = cache.get(url);
     if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
         console.log(`✓ Cache hit for: ${url}`);
         return cached.data;
     }
 
-    // Check if already scraping this URL
     if (inProgress.has(url)) {
         console.log(`⏳ Already scraping: ${url}, waiting...`);
         return await inProgress.get(url);
     }
 
-    // Create promise for this scrape
     const scrapePromise = (async () => {
-        console.log(`Scraping all days from: ${url}`);
+        console.log(`Scraping: ${url}`);
         let browser = null;
         
         try {
             browser = await chromium.launch({ 
                 headless: true,
-                args: ['--no-sandbox', '--disable-dev-shm-usage'] // Reduce memory usage
+                args: ['--no-sandbox', '--disable-dev-shm-usage']
             });
             const page = await browser.newPage();
             
             await page.goto(url, { waitUntil: 'networkidle', timeout: 60000 });
-            await page.waitForTimeout(3000);
             
-            // Check if this is a Food & Co site (needs "Hela veckan" button)
             const isFoodAndCo = url.includes('compass-group.se');
             
             if (isFoodAndCo) {
-                // Click "Hela veckan" to show all days at once
+                // Accept cookie consent if present
+                try {
+                    const acceptBtn = page.locator('button:has-text("Godkänn alla")');
+                    if (await acceptBtn.count() > 0) {
+                        await acceptBtn.first().click();
+                        console.log('  ✓ Accepted cookies');
+                        await page.waitForTimeout(2000);
+                    }
+                } catch (e) { /* no cookie banner */ }
+                
+                // Wait for menu to load
+                await page.waitForTimeout(5000);
+                
+                // Click "Hela veckan" to show all days
                 try {
                     const wholeWeekButton = page.locator('button:has-text("Hela veckan")');
                     if (await wholeWeekButton.count() > 0) {
                         await wholeWeekButton.first().click();
-                        await page.waitForTimeout(5000);
+                        await page.waitForTimeout(3000);
                         console.log('  ✓ Clicked "Hela veckan"');
                     }
                 } catch (e) {
                     console.log('  Could not click "Hela veckan"');
                 }
                 
-                // Get all text content for Food & Co
                 const allText = await page.textContent('body');
                 console.log(`Total: ${allText.length} chars`);
-                
-                // Cache the result
                 cache.set(url, { data: allText, timestamp: Date.now() });
                 return allText;
             } else {
-                // For other sites (like Courtyard), return HTML
                 const html = await page.content();
                 console.log(`Total: ${html.length} bytes`);
-                
-                // Cache the result
                 cache.set(url, { data: html, timestamp: Date.now() });
                 return html;
             }
         } finally {
-            // Always close browser to free memory
-            if (browser) {
-                await browser.close();
-            }
+            if (browser) await browser.close();
             inProgress.delete(url);
         }
     })();
