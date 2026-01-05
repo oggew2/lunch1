@@ -3,6 +3,7 @@
 import { setState, subscribe, setLoading, setError, updateMenu, getState } from './state.js';
 import { getCurrentWeek, getCurrentDay } from './utils/date.js';
 import { loadFromCache, saveToCache } from './utils/cache.js';
+import { sanitizeHTML } from './utils/sanitize.js';
 import { CourtyardFetcher } from './fetchers/courtyard.js';
 import { TimeBuildingFetcher } from './fetchers/timebuilding.js';
 import { KistaFetcher } from './fetchers/kista.js';
@@ -148,9 +149,9 @@ function render() {
                     items.forEach(item => {
                         html += `<li>`;
                         if (item.category) {
-                            html += `<span class="category-badge">${item.category}</span>`;
+                            html += `<span class="category-badge">${sanitizeHTML(item.category)}</span>`;
                         }
-                        html += `<span class="item-name">${item.name}</span>`;
+                        html += `<span class="item-name">${sanitizeHTML(item.name)}</span>`;
                         html += `</li>`;
                     });
                     html += '</ul>';
