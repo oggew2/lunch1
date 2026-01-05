@@ -1,18 +1,26 @@
 name: Weekly Menu Scrape
 on:
   schedule:
-    - cron: '0 5 * * 1'  # Monday 5 AM UTC (6 AM CET)
-  workflow_dispatch:  # Allow manual trigger
+    - cron: '0 6 * * 1'  # Monday 6 AM UTC = 7 AM CET
+  workflow_dispatch:
 
 jobs:
   scrape:
     runs-on: ubuntu-latest
     steps:
+      - name: Wake up Render service
+        run: |
+          curl -s "https://lunch1-1.onrender.com/version" || true
+          sleep 60  # Wait for cold start
+      
+      - name: Clear old cache
+        run: curl -s "https://lunch1-1.onrender.com/clear-cache"
+      
       - name: Scrape Food & Co Kista
-        run: curl -f "https://lunch1-1.onrender.com?url=https://www.compass-group.se/restauranger-och-menyer/foodandco/kista/"
+        run: curl -sf --max-time 120 "https://lunch1-1.onrender.com?url=https://www.compass-group.se/restauranger-och-menyer/foodandco/kista/"
         
       - name: Scrape The Courtyard  
-        run: curl -f "https://lunch1-1.onrender.com?url=https://ericssonbynordrest.se/restaurang/the-courtyard/"
+        run: curl -sf --max-time 120 "https://lunch1-1.onrender.com?url=https://ericssonbynordrest.se/restaurang/the-courtyard/"
         
       - name: Scrape Food & Co Time Building
-        run: curl -f "https://lunch1-1.onrender.com?url=https://www.compass-group.se/restauranger-och-menyer/foodandco/food--co-timebuilding/"
+        run: curl -sf --max-time 120 "https://lunch1-1.onrender.com?url=https://www.compass-group.se/restauranger-och-menyer/foodandco/food--co-timebuilding/"
