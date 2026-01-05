@@ -4,6 +4,10 @@
   "outputDirectory": "src",
   "routes": [
     {
+      "src": "/api/menu",
+      "dest": "/api/menu.js"
+    },
+    {
       "src": "/api/scrape",
       "dest": "/api/scrape.js"
     },
