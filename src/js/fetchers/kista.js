@@ -41,6 +41,9 @@ export class KistaFetcher extends MenuFetcher {
         
         const menuText = doc.body.textContent;
         
+        // Pattern to match any day header
+        const dayHeaderPattern = /(Måndag|Tisdag|Onsdag|Torsdag|Fredag|Monday|Tuesday|Wednesday|Thursday|Friday)\s+\d{4}-\d{2}-\d{2}/gi;
+        
         const dayPatterns = [
             { key: 'monday', pattern: /Måndag\s+\d{4}-\d{2}-\d{2}|Monday\s+\d{4}-\d{2}-\d{2}/i },
             { key: 'tuesday', pattern: /Tisdag\s+\d{4}-\d{2}-\d{2}|Tuesday\s+\d{4}-\d{2}-\d{2}/i },
@@ -49,11 +52,23 @@ export class KistaFetcher extends MenuFetcher {
             { key: 'friday', pattern: /Fredag\s+\d{4}-\d{2}-\d{2}|Friday\s+\d{4}-\d{2}-\d{2}/i }
         ];
         
+        // Find all day header positions
+        const dayPositions = [];
+        let m;
+        while ((m = dayHeaderPattern.exec(menuText)) !== null) {
+            dayPositions.push(m.index);
+        }
+        dayPositions.push(menuText.length); // Add end marker
+        
         dayPatterns.forEach(({ key, pattern }) => {
             const match = menuText.match(pattern);
             if (match) {
                 const startIdx = match.index + match[0].length;
-                const section = menuText.substring(startIdx, startIdx + 1500);
+                
+                // Find the next day's position to limit section
+                const nextDayIdx = dayPositions.find(pos => pos > match.index + 10) || (startIdx + 1500);
+                const section = menuText.substring(startIdx, nextDayIdx);
+                
                 const allLines = section.split('\n')
                     .map(l => l.trim())
                     .filter(l => {
