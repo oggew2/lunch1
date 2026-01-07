@@ -113,7 +113,7 @@ export class KistaFetcher extends MenuFetcher {
                     }
                 }
                 
-                days[key] = uniqueLines.slice(0, 3).map(name => ({ 
+                days[key] = uniqueLines.slice(0, 4).map(name => ({ 
                     name: name.trim(), 
                     co2Label: null,
                     category: detectFoodCategory(name)
