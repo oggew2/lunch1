@@ -1,5 +1,5 @@
 // Service Worker for Kista Lunch App
-const CACHE_NAME = 'kista-lunch-v1';
+const CACHE_NAME = 'kista-lunch-v2';
 const STATIC_ASSETS = [
     '/',
     '/index.html',
