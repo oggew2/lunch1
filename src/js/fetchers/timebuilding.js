@@ -78,6 +78,14 @@ export class TimeBuildingFetcher extends MenuFetcher {
                                !l.match(/^\d{2}[:.]\d{2}/) &&
                                !l.includes('©') &&
                                !l.includes('http');
+                    })
+                    .map(line => {
+                        // If line has both Swedish and English, extract English part
+                        if (/[åäö]/i.test(line) && /\b(with|served|baked|fried|grilled|roasted|seared)\b/i.test(line)) {
+                            const engMatch = line.match(/[a-zåäö]\s+([A-Z][a-z].*(?:with|served|sauce|potato|rice|vegetables).*)/);
+                            if (engMatch) return engMatch[1];
+                        }
+                        return line;
                     });
                 
                 // Deduplicate - prefer English
